@@ -1,6 +1,7 @@
 import { generateResponse, asyncHandler, generateRandomOTP } from '../utils/helpers.js';
 import { createUser, findUser } from '../models/index.js';
 import { STATUS_CODES } from '../utils/constants.js';
+
 // register user
 export const register = asyncHandler(async (req, res, next) => {
     // create user in db
@@ -14,7 +15,9 @@ export const register = asyncHandler(async (req, res, next) => {
 
 // login user
 export const login = asyncHandler(async (req, res, next) => {
+    
     let user = await findUser({ email: req.body.email }).select('+password');
+
     if (!user) return next({
         statusCode: STATUS_CODES.BAD_REQUEST,
         message: 'Invalid email or password'
@@ -70,7 +73,7 @@ export const otpVerify = asyncHandler(async (req, res, next) => {
 
     if(!user) return next({
         statusCode: STATUS_CODES.BAD_REQUEST,
-        message: 'Invalid email'
+        message: 'user is not authorized to perform this action again.'
     });
 
     // if(user.otp !== otp) return next({

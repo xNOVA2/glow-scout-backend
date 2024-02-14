@@ -5,9 +5,14 @@ import { ROLES } from "../utils/constants.js";
 
 // user register validator
 const userRegisterValidator = Joi.object({
-    name: Joi.string().trim().required(),
+    name: Joi.string()
+        .trim()
+        .required()
+        .min(6),
+
     email: Joi.string().trim().email({ minDomainSegments: 2 }),
-    password: Joi.string().required(),
+    password: Joi.string().required().regex(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z0-9!@#$%^&*()]*$/)
+        .message("Password must be at least 6 characters and contain at least one uppercase letter, one digit, and one special character"),
     role: Joi.string().valid(...Object.values(ROLES)).required(),
 });
 
@@ -17,5 +22,18 @@ const userLoginValidator = Joi.object({
     password: Joi.string().required()
 });
 
-export const registerValidation = [validateRequest(userRegisterValidator), emailExistsValidator];
-export const loginValidation = validateRequest(userLoginValidator);
+const userForgotPasswordValidator = Joi.object({
+    email: Joi.string().trim().email({ minDomainSegments: 2 })
+});
+
+const userOtpVerifyValidator = Joi.object({
+    email: Joi.string().trim().email({ minDomainSegments: 2 }),
+    otp: Joi.string().required().length(5)
+});
+export const registerValidation = [
+
+    validateRequest(userRegisterValidator), emailExistsValidator];
+
+    export const loginValidation = validateRequest(userLoginValidator);
+    export const forgotPasswordValidation = validateRequest(userForgotPasswordValidator);
+    

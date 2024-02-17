@@ -5,6 +5,7 @@ import { STATUS_CODES } from '../utils/constants.js';
 // register user
 export const register = asyncHandler(async (req, res, next) => {
     // create user in db
+    
     let user = await createUser(req.body);
     // remove password
     user = user.toObject();

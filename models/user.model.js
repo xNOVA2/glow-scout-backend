@@ -13,10 +13,30 @@ const userSchema = new Schema({
     password: { type: String, select: false },
     role: { type: String, enum: Object.values(ROLES), default: "user" },
     profileImage: { type: String },
-    isDeleted: { type: Boolean, default: false},
-    otp:{type: Number},
-    otpExpiry:{type:Date},
-}, { timestamps: true, versionKey: false });
+    coverImage: { type: String },
+    isDeleted: { type: Boolean, default: false },
+    otp: { type: Number },
+    otpExpiry: { type: Date },
+    alternateEmail: { type: String },
+    businessEmail: { type: String },
+    phone: { type: String },
+    links: [{
+        platform: { type: String, enum: ['facebook', 'instagram', 'snapchat'] },
+        url: { type: String }
+    }],
+    city: { type: String },
+    businessTiming: [{
+        day: { type: String, enum: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
+        timing: { type: String, default: "00:00 to 00:00" }
+    }],
+    rating: [{ type: Number }], 
+    showcaseImage1: {
+        type: String,
+    },
+    showcaseImage2: {
+        type: String,
+    },
+}, { timestamps: true });
 
 // hash password before saving
 userSchema.pre("save", async function (next) {

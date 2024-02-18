@@ -4,8 +4,8 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const goalSchema = new Schema({
-    title: {type: String,required: true},
-    picture: {type: String,required: true},
+    title: {type: String},
+    image: {type: String},
     isDeleted:{type:Boolean,default:false}
 }, { timestamps: true, versionKey: false });
 
@@ -14,10 +14,8 @@ goalSchema.plugin(mongoosePaginate);
 goalSchema.plugin(aggregatePaginate);
 
 
- const GoalModel = model('goal', goalSchema);
-
-
-
+ const GoalModel = model("goal", goalSchema);
+ 
  // create 
  export const createGoal = (goalData) => GoalModel.create(goalData);
 
@@ -36,9 +34,8 @@ goalSchema.plugin(aggregatePaginate);
         limit,
 
     });
-    
     return { data, pagination };
 };
 
  // find goal by id
- export const findGoal = (id) => GoalModel.findOne(id);
+ export const findGoal = (query) => GoalModel.findOne(query);

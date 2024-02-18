@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken';
 import { createUser, findUser } from '../models/index.js';
 import { ROLES } from './constants.js';
-import { hash } from 'bcrypt';
+import fs from 'fs'
+import multer from 'multer';
 
 // generate response with status code
 export const generateResponse = (data, message, res, code = 200) => {
@@ -95,4 +95,34 @@ export const createDefaultAdmin = async () => {
 };
 export const generateRandomOTP = () => {
     return Math.floor(10000 + Math.random() * 90000);
+}
+
+const generateFilename = (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + '.' + file.originalname.split('.').pop());
+}
+
+const filterImageOrDocsOrPDF = (req, file, cb) => {
+    if (!file.mimetype.match(/image\/(jpg|JPG|webp|jpeg|JPEG|png|PNG|gif|GIF|jfif|JFIF|svg|SVG|bmp|BMP|ico|ICO|tiff|TIFF|psd|PSD|pdf|PDF|doc|DOC|docx|DOCX|xls|XLS|xlsx|XLSX|ppt|PPT|pptx|PPTX)/)) {
+        req.fileValidationError = 'Only image, docs and pdf files are allowed!';
+        return cb(null, false);
+    }
+    cb(null, true);
+}
+
+export const upload = (folderName) => {
+    return multer({
+        storage: multer.diskStorage({
+            destination: function (req, file, cb) {
+                const path = `uploads/${folderName}/`;
+                fs.mkdirSync(path, { recursive: true })
+                cb(null, path);
+            },
+
+            // By default, multer removes file extensions so let's add them back
+            filename: generateFilename
+        }),
+        limits: { fileSize: 10 * 1024 * 1024 },  // max 10MB //
+        fileFilter: filterImageOrDocsOrPDF
+    })
 }

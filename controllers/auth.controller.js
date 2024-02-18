@@ -55,7 +55,7 @@ export const otpGenerate = asyncHandler(async (req, res, next) => {
 
     if(!user) return next({
         statusCode: STATUS_CODES.BAD_REQUEST,
-        message: 'Invalid email'
+        message: 'user does not exist'
     });
 
     user.otp = otp;

@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 // user schema
 const userSchema = new Schema({
     name: { type: String },
-    email: { type: String, lowercase: true },
+    email: { type: String, lowercase: true},
     password: { type: String, select: false },
     role: { type: String, enum: Object.values(ROLES), default: "user" },
     profileImage: { type: String },

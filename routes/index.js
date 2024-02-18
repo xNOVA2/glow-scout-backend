@@ -3,6 +3,8 @@ import RootAPI from './root.route.js';
 import AuthAPI from './auth.route.js';
 import GoalAPI from './goal.route.js';
 import TreatmentAPI from './treatment.route.js';
+import BlogApi from './blog.route.js';
+import SettingApi from './setting.route.js';
 // import UserAPI from './user.route.js';
 
 export default class API {
@@ -17,7 +19,8 @@ export default class API {
         this.routeGroups.push(new AuthAPI());
         this.routeGroups.push(new GoalAPI());
         this.routeGroups.push(new TreatmentAPI());
-
+        this.routeGroups.push(new BlogApi());
+        this.routeGroups.push(new SettingApi());
 
         // this.routeGroups.push(new UserAPI());
     }

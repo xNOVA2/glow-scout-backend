@@ -10,7 +10,7 @@ const treatmentSchema = new mongoose.Schema({
     description: {
         type: String,
     },
-    picture: {
+    image: {
         type: String,
     },
     spas: [{
@@ -37,19 +37,23 @@ export const getAllTreatmentOfSingleGoal = (id) => TreatmentModel.find({goal: id
 
 export const updateTreatmentById = (id, obj) => TreatmentModel.findByIdAndUpdate(id, obj, {new: true,});
 
-export const deleteTreatmentById = (id) => TreatmentModel.findByIdAndDelete(id)
+export const deleteTreatment = (id) => TreatmentModel.findByIdAndDelete(id)
 
 // get all treatment
-export const getAllTreatment = async ({ query, page, limit }) => {
+export const getAllTreatments = async ({ query, page, limit,sort }) => {
     const { data, pagination } = await getMongoosePaginatedData({
         model: TreatmentModel,
         query:   {...query},
         page,
         limit,
+        sort
     });
     return { data, pagination };
 };
 
-export const getAllTreatmentsByTitleAndUser = (title) => { return TreatmentModel.aggregate([{ $match: { title: title }},{$lookup: {from: 'users',  localField: 'createdByUser',foreignField: '_id',as: 'createdByUser'}},{$unwind: '$createdByUser'},])}
+export const getAllTreatment = async (id) => {
+    const treatment = await TreatmentModel.findOne({_id:id}).populate('spas');
+    return treatment;
+ };
+ export const findTreatment =  (query) =>  TreatmentModel.findOne(query);
 
-export const findTreatment = (query) => TreatmentModel.findOne(query);

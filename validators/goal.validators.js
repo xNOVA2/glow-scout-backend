@@ -3,13 +3,11 @@ import { validateRequest } from "./validate.js";
 
 
 const addGoalValidator = Joi.object({
-    title: Joi.string().trim().required(),
-    picture: Joi.string().required(),
+    title: Joi.string().trim().required().min(3),
 });
 
 const updateGoalValidator = Joi.object({
-    title: Joi.string().trim().required(),
-    picture: Joi.string().required(),
+    title: Joi.string().trim().required().min(3),
 });
 
 export const addGoalValidation = [validateRequest(addGoalValidator)];

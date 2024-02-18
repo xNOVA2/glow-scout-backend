@@ -1,8 +1,9 @@
 import { Router } from 'express';
-
-import { addTreatment,assignTreatmentToSpa, getAllTreatmentsOfSingleGoals,deleteTreatment,fetchTreatments,updateTreatment,getAllTreatmentsByTitleAndUsers } from '../controllers/treatment.controller.js';
+import { addTreatment, getAllTreatmentsOfSingleGoals,deleteTreatments,getSpasTreatment,fetchTreatments,updateTreatment,  } from '../controllers/treatment.controller.js';
 import { ROLES } from '../utils/constants.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { upload } from '../utils/helpers.js';
+import { createTreatmentValidation, updateTreatmentValidation } from '../validators/treatment.validators.js';
 
 
 export default class TreatmentAPI {
@@ -13,15 +14,11 @@ export default class TreatmentAPI {
     // add validation later on
     setupRoutes() {
         this.router.get('/', fetchTreatments);
-        this.router.get('/:id', getAllTreatmentsOfSingleGoals);
-        this.router.get('/getAllTreatmentsOfferBySpas', getAllTreatmentsByTitleAndUsers);
-        this.router.post('/create',  authMiddleware([ROLES.BUSINESS]), addTreatment);
-        this.router.put('/assign-treatment/:id',  authMiddleware([ROLES.BUSINESS]), assignTreatmentToSpa);
-        this.router.put('/update/:id',  authMiddleware(Object.values(ROLES)), updateTreatment);
-        this.router.delete('/delete/:id',  authMiddleware(Object.values(ROLES)), deleteTreatment);
-     
-
-
+        this.router.get('/spas/:id', getSpasTreatment);
+        this.router.get('/goal/:id', getAllTreatmentsOfSingleGoals);
+        this.router.post('/create',  authMiddleware([ROLES.BUSINESS]),upload("goals").fields([{name:'image',maxCount:'1'}]), createTreatmentValidation,addTreatment);
+        this.router.put('/update/:id',  authMiddleware([ROLES.BUSINESS]),upload("goals").fields([{name:'image',maxCount:'1'}]),updateTreatmentValidation, updateTreatment);
+        this.router.delete('/delete/:id',  authMiddleware([ROLES.BUSINESS]), deleteTreatments);
     }
 
     getRouter() {

@@ -114,7 +114,7 @@ export const upload = (folderName) => {
     return multer({
         storage: multer.diskStorage({
             destination: function (req, file, cb) {
-                const path = `tmp/${folderName}/`;
+                const path = `/tmp/${folderName}/`;
                 if (!fs.existsSync(path)) {
                     fs.mkdirSync(path, { recursive: true });
                 }

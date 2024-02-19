@@ -68,19 +68,19 @@ export const otpGenerate = asyncHandler(async (req, res, next) => {
 
 export const otpVerify = asyncHandler(async (req, res, next) => {
     // create user in db
-  let {email, otp} = req.body;
+    let {email, otp} = req.body;
 
-    const user = await findUser({ email,otp });
+    const user = await findUser({ email });
 
     if(!user) return next({
         statusCode: STATUS_CODES.BAD_REQUEST,
         message: 'user is not authorized to perform this action again.'
     });
 
-    // if(user.otp !== otp) return next({
-    //     statusCode: STATUS_CODES.BAD_REQUEST,
-    //     message: 'Invalid OTP'
-    // });
+    if(user.otp != otp) return next({
+        statusCode: STATUS_CODES.BAD_REQUEST,
+        message: 'Invalid OTP'
+    });
 
     if(user.otpExpiry < new Date()) return next({
         statusCode: STATUS_CODES.BAD_REQUEST,
@@ -90,10 +90,8 @@ export const otpVerify = asyncHandler(async (req, res, next) => {
     user.otp = null;
     user.otpExpiry = null;
 
-
     await user.save();
     
-
     const acessToken = await user.generateAccessToken(user);
 
     generateResponse( acessToken , "OTP verified sucessfully", res);
@@ -118,3 +116,18 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     generateResponse( null , "Password reset sucessfully", res);
 }
 )
+
+export const getCurrentUser = asyncHandler(async(req,res,next)=>{
+
+    const user = await findUser({ _id: req.user.id });
+    if (!user) return next({
+        statusCode: STATUS_CODES.UNAUTHORIZED,
+        message: 'Unauthorized access!'
+    });
+    
+    // remove password
+    user = user.toObject();
+    delete user.password;
+
+    generateResponse(user, "User fetched sucessfully", res);
+})

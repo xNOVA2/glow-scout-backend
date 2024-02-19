@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, otpGenerate, otpVerify, register,resetPassword } from '../controllers/index.js';
+import { getCurrentUser, login, otpGenerate, otpVerify, register,resetPassword } from '../controllers/index.js';
 import { loginValidation, registerValidation,forgotPasswordValidation } from '../validators/index.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { ROLES } from '../utils/constants.js';
@@ -16,6 +16,8 @@ export default class AuthAPI {
         this.router.post('/otp',forgotPasswordValidation,  otpGenerate);
         this.router.put('/verify-otp',  otpVerify);
         this.router.put('/reset-password', authMiddleware(Object.values(ROLES)),resetPassword);
+        this.router.get('/getCurrentUser', authMiddleware(Object.values(ROLES)),getCurrentUser);
+
 
     }
 

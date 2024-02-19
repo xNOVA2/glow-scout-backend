@@ -3,6 +3,7 @@ import { STATUS_CODES } from '../utils/constants.js';
 import { findUser } from '../models/index.js';
 
 export const authMiddleware = (roles) => {
+    
     return (req, res, next) => {
         const accessToken = req.headers.authorization?.split(' ')[1] || req.session.accessToken;
         if (!accessToken) return next({

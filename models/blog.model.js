@@ -21,6 +21,7 @@ const blogSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
 blogSchema.plugin(mongoosePaginate);
 blogSchema.plugin(aggregatePaginate);
 

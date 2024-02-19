@@ -119,15 +119,17 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 
 export const getCurrentUser = asyncHandler(async(req,res,next)=>{
 
-    const user = await findUser({ _id: req.user.id });
-    if (!user) return next({
-        statusCode: STATUS_CODES.UNAUTHORIZED,
-        message: 'Unauthorized access!'
-    });
-    
+    let user = await findUser({ _id: req.user.id });
+
     // remove password
     user = user.toObject();
     delete user.password;
 
     generateResponse(user, "User fetched sucessfully", res);
+})
+
+
+export const logoutUser = asyncHandler(async(req,res,next)=>{
+    req.session = null;
+    generateResponse(null, "User logged out sucessfully", res);
 })

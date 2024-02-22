@@ -5,7 +5,6 @@ import { STATUS_CODES } from '../utils/constants.js';
 // register user
 export const register = asyncHandler(async (req, res, next) => {
     // create user in db
-    
     let user = await createUser(req.body);
     // remove password
     user = user.toObject();
@@ -118,7 +117,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 )
 
 export const getCurrentUser = asyncHandler(async(req,res,next)=>{
-
+     
     let user = await findUser({ _id: req.user.id });
 
     // remove password
@@ -128,7 +127,7 @@ export const getCurrentUser = asyncHandler(async(req,res,next)=>{
     generateResponse(user, "User fetched sucessfully", res);
 })
 
-
+// logout function 
 export const logoutUser = asyncHandler(async(req,res,next)=>{
     req.session = null;
     generateResponse(null, "User logged out sucessfully", res);

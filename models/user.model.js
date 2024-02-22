@@ -30,6 +30,7 @@ const userSchema = new Schema({
         timing: { type: String, default: "00:00 to 00:00" }
     }],
     rating: [{ type: Number }], 
+    // these images related to business dashboard of spas
     showcaseImage1: {
         type: String,
     },
@@ -88,4 +89,5 @@ export const getAllUsers = async ({ query, page, limit }) => {
     return { data, pagination };
 };
 
+// delete user we will change this to soft delete
 export const deleteUserById = (id) => UserModel.findByIdAndDelete(id)

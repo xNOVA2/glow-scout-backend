@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 import { getCurrentUser, login, logoutUser, otpGenerate, otpVerify, register,resetPassword } from '../controllers/index.js';
 import { loginValidation, registerValidation,forgotPasswordValidation } from '../validators/index.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';

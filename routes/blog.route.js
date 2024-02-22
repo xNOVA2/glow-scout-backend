@@ -11,7 +11,7 @@ export default class BlogApi {
     }
     // 
     setupRoutes() {
-        this.router.get('/', authMiddleware(ROLES.ADMIN), fetchBlogs);
+        this.router.get('/', fetchBlogs);
         this.router.get('/:id', authMiddleware(ROLES.ADMIN), getBlog);
         this.router.put('/update/:id',authMiddleware(ROLES.ADMIN), updateBlogValidation, updateBlogPost);
         this.router.delete('/delete/:id',authMiddleware(ROLES.ADMIN), deleteBlogPost);

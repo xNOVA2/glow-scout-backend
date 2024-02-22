@@ -16,7 +16,7 @@ const settingSchema = new mongoose.Schema({
 const Setting = mongoose.model('Setting', settingSchema);
 
 
-
+// create settinf of same type if not exist else just modify the content
 export const createSetting = async (setting) => {
     const existingSetting = await Setting.findOne({ type: setting.type });
     if (existingSetting) {

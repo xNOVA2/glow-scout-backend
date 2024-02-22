@@ -9,10 +9,10 @@ export default class BlogApi {
         this.router = Router();
         this.setupRoutes();
     }
-    // 
+    
     setupRoutes() {
         this.router.get('/', fetchBlogs);
-        this.router.get('/:id', authMiddleware(ROLES.ADMIN), getBlog);
+        this.router.get('/:id', getBlog);
         this.router.put('/update/:id',authMiddleware(ROLES.ADMIN), updateBlogValidation, updateBlogPost);
         this.router.delete('/delete/:id',authMiddleware(ROLES.ADMIN), deleteBlogPost);
         this.router.post('/create',authMiddleware(ROLES.ADMIN), addBlogValidation, createBlogPost);

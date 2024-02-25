@@ -16,8 +16,8 @@ const treatmentSchema = new mongoose.Schema({
     spas: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
+        
     }],
-    
     goal: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'goal',
@@ -56,4 +56,13 @@ export const getAllTreatment = async (id) => {
     return treatment;
  };
  export const findTreatment =  (query) =>  TreatmentModel.findOne(query);
+
+export const findAllSpasTreatment =  (id) =>  TreatmentModel.aggregate([
+    {
+        $match: {
+            spas: new  mongoose.Types.ObjectId(id)
+        }
+    }
+])
+
 

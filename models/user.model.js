@@ -12,8 +12,7 @@ const userSchema = new Schema({
     email: { type: String, lowercase: true},
     password: { type: String, select: false },
     role: { type: String, enum: Object.values(ROLES), default: "user" },
-    profileImage: { type: String },
-    coverImage: { type: String },
+    profileImage: { type: String},
     isDeleted: { type: Boolean, default: false },
     otp: { type: Number },
     otpExpiry: { type: Date },
@@ -73,6 +72,8 @@ const UserModel = model('user', userSchema);
 // create new user
 export const createUser = (obj) => UserModel.create(obj);
 
+// update user
+export const updateUser = (id, data) => UserModel.findByIdAndUpdate(id, data, { new: true });
 // find user by query
 export const findUser = (query) => UserModel.findOne({...query,isDeleted:false});
 
@@ -91,3 +92,17 @@ export const getAllUsers = async ({ query, page, limit }) => {
 
 // delete user we will change this to soft delete
 export const deleteUserById = (id) => UserModel.findByIdAndDelete(id)
+
+// Spas Methods
+
+export const getAllSpas = async ({ query, page, limit }) => {
+    const { data, pagination } = await getMongoosePaginatedData({
+        model: UserModel,
+        query:   {...query,role:ROLES.BUSINESS},
+        page,
+        limit,
+    });
+
+    return { data, pagination };
+}
+

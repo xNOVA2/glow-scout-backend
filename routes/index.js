@@ -5,6 +5,9 @@ import GoalAPI from './goal.route.js';
 import TreatmentAPI from './treatment.route.js';
 import BlogApi from './blog.route.js';
 import SettingApi from './setting.route.js';
+import SpasApi from './spas.route.js';
+import UserApi from './user.route.js';
+import TestimonialAPI from './clientTestimonial.route.js';
 // import UserAPI from './user.route.js';
 
 export default class API {
@@ -21,8 +24,10 @@ export default class API {
         this.routeGroups.push(new TreatmentAPI());
         this.routeGroups.push(new BlogApi());
         this.routeGroups.push(new SettingApi());
+        this.routeGroups.push(new SpasApi());
+        this.routeGroups.push(new UserApi());
+        this.routeGroups.push(new TestimonialAPI());
 
-        // this.routeGroups.push(new UserAPI());
     }
 
     setContentType(req, res, next) {

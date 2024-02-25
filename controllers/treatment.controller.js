@@ -150,5 +150,5 @@ export const getSpasTreatment = asyncHandler(async (req, res, next) => {
  
     const treatments = await getAllTreatment({ _id: id });
     
-    generateResponse(treatments, 'Treatments fetched successfully', res);
+    generateResponse(treatments, 'Spas treatment fetched successfully', res);
 });

@@ -40,7 +40,7 @@ export const getBlogs = async ({ query, page, limit }) => {
     return { data, pagination };
 };
 
-export const getBlogById = (query) => BlogModel.findOne(query)
+export const findBlog = (query) => BlogModel.findOne(query)
 
 export const updateBlog = (id, update) => BlogModel.findByIdAndUpdate(id, update)
 

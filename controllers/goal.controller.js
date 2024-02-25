@@ -59,6 +59,7 @@ export const updateGoals = asyncHandler(async (req, res, next) => {
    generateResponse(goal, "Goal updated successfully", res);
 });
 
+// Fetch All Goals
 export const getGoals = asyncHandler(async (req, res, next) => {
 
   const page = +(req.query.page || 1);

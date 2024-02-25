@@ -1,15 +1,13 @@
 import Joi from "joi";
-import { validateParams, validateRequest } from "./validate.js";
+import {  validateRequest } from "./validate.js";
 
-const addOrUpdateUserValidator = Joi.object({
+
+const userUpdateValidator = Joi.object({
     name: Joi.string().trim().required(),
     email: Joi.string().trim().email({ minDomainSegments: 2 }).required(),
-    password: Joi.string().min(8).required(),
-});
+    city: Joi.string().trim(),
+    phone: Joi.string().trim().min(7).max(12).required(),
+    alternateEmail: Joi.string().trim()
 
-const userIdPathValidator = Joi.object({
-    userId: Joi.string().hex().length(24).required(),
 });
-
-export const userUpdateValidation = validateRequest(addOrUpdateUserValidator);
-export const deleteUserValidation = validateParams(userIdPathValidator);
+export const UpdateUserValidation = validateRequest(userUpdateValidator);

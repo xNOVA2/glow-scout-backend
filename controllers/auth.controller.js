@@ -2,7 +2,7 @@ import { generateResponse, asyncHandler, generateRandomOTP } from '../utils/help
 import { createUser, findUser } from '../models/index.js';
 import { STATUS_CODES } from '../utils/constants.js';
 
-// register user
+// Register user API
 export const register = asyncHandler(async (req, res, next) => {
     // create user in db
     let user = await createUser(req.body);
@@ -13,7 +13,7 @@ export const register = asyncHandler(async (req, res, next) => {
     generateResponse( user , "Register successful", res);
 });
 
-// login user
+// Login user API
 export const login = asyncHandler(async (req, res, next) => {
     
     let user = await findUser({ email: req.body.email }).select('+password');
@@ -39,6 +39,7 @@ export const login = asyncHandler(async (req, res, next) => {
     generateResponse({ user, accessToken }, 'Login successful', res);
 });
 
+// OTP Generate API
 export const otpGenerate = asyncHandler(async (req, res, next) => {
     // create user in db
   let {email} = req.body;
@@ -65,12 +66,13 @@ export const otpGenerate = asyncHandler(async (req, res, next) => {
     generateResponse( otp , "OTP generated sucessfully", res);
 })
 
+// OTP VERIFY API
 export const otpVerify = asyncHandler(async (req, res, next) => {
     // create user in db
     let {email, otp} = req.body;
 
     const user = await findUser({ email });
-
+    
     if(!user) return next({
         statusCode: STATUS_CODES.BAD_REQUEST,
         message: 'user is not authorized to perform this action again.'
@@ -96,7 +98,7 @@ export const otpVerify = asyncHandler(async (req, res, next) => {
     generateResponse( acessToken , "OTP verified sucessfully", res);
 })
 
-
+// Reset password  API
 export const resetPassword = asyncHandler(async (req, res, next) => {
     // create user in db
   let {password} = req.body;
@@ -113,9 +115,9 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     await user.save();
     
     generateResponse( null , "Password reset sucessfully", res);
-}
-)
+})
 
+//  Current user API
 export const getCurrentUser = asyncHandler(async(req,res,next)=>{
      
     let user = await findUser({ _id: req.user.id });
@@ -127,7 +129,7 @@ export const getCurrentUser = asyncHandler(async(req,res,next)=>{
     generateResponse(user, "User fetched sucessfully", res);
 })
 
-// logout function 
+// Logout API
 export const logoutUser = asyncHandler(async(req,res,next)=>{
     req.session = null;
     generateResponse(null, "User logged out sucessfully", res);

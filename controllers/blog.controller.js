@@ -1,13 +1,15 @@
 import { generateResponse, asyncHandler } from '../utils/helpers.js';
 import { STATUS_CODES } from '../utils/constants.js';
-import { createBlog,deleteBlog,getBlogs,getBlogById,updateBlog} from '../models/index.js';
+import { createBlog,deleteBlog,getBlogs,updateBlog, findBlog} from '../models/index.js';
 
+// Create blog
 export const createBlogPost = asyncHandler(async (req, res,next) => {
     const blog = await createBlog(req.body);
 
      generateResponse(blog, "Blog created sucessfully", res);
 });
 
+// fetch all the blogs
 export const fetchBlogs = asyncHandler(async (req, res,next) => {
 
     const page = +(req.query.page || 1);
@@ -20,6 +22,7 @@ export const fetchBlogs = asyncHandler(async (req, res,next) => {
      generateResponse(blogs,"Blogs Fetch sucessfully", res);
 });
 
+// delete blog 
 export const deleteBlogPost = asyncHandler(async (req, res) => {
 
     const id = req.params.id 
@@ -33,6 +36,7 @@ export const deleteBlogPost = asyncHandler(async (req, res) => {
      generateResponse(blog, "Blog deleted sucessfully",res);
 });
 
+// update blog 
 export const updateBlogPost = asyncHandler(async (req, res,next) => {
 
     const id = req.params.id
@@ -50,9 +54,10 @@ export const updateBlogPost = asyncHandler(async (req, res,next) => {
      generateResponse(blog, "Blog Updated sucessfully",res);
 });
 
+// Get single Blog
 export const getBlog = asyncHandler(async (req, res,next) => {
 
-    const blog = await getBlogById({ _id: req.params.id });
+    const blog = await findBlog({ _id: req.params.id });
 
     if(!blog) return next({
         message: 'Blog not found',

@@ -17,8 +17,6 @@ export default class GoalAPI {
         this.router.put('/update/:id', authMiddleware(ROLES.ADMIN),upload("goals").fields([{name:'image',maxCount:'1'}]), updateGoalValidation, updateGoals);
         this.router.delete('/delete/:id',authMiddleware(ROLES.ADMIN),  deleteGoal);
         this.router.get('/',  getGoals);
-        
-
     }
 
     getRouter() {

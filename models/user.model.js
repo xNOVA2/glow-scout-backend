@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import mongoosePaginate from 'mongoose-paginate-v2';
 import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 import { getMongoosePaginatedData } from "../utils/helpers.js";
-import { ROLES } from "../utils/constants.js";
+import { LOGIN_TYPES, ROLES } from "../utils/constants.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -19,6 +19,7 @@ const userSchema = new Schema({
     alternateEmail: { type: String },
     businessEmail: { type: String },
     phone: { type: String },
+    loginType: { type: String, enum: Object.values(LOGIN_TYPES), default: LOGIN_TYPES.EMAIL_PASSWORD },
     links: [{
         platform: { type: String, enum: ['facebook', 'instagram', 'snapchat'] },
         url: { type: String }

@@ -1,6 +1,6 @@
 export const ROLES = Object.freeze({
   ADMIN: 'admin',
-  USER: 'user', // request initiator
+  USER: 'user', 
   BUSINESS: 'business',
 });
 
@@ -18,23 +18,8 @@ export const STATUS_CODES = Object.freeze({
   INTERNAL_SERVER_ERROR: 500,
 });
 
-export const ACTIVITY_TYPES = Object.freeze({
-  EVENT: 'event',
-  TRAINING: 'training',
-  CLINIC_FACILITATION: 'clinic_facilitation',
-  OTHER: 'other'
-});
-
-export const ACTIVITY_STATUS = Object.freeze({
-  SUBMITTED: 'submitted',
-  INITIATED: 'initiated',
-  UNDER_REVIEW: 'under_review',
-  APPROVED: 'approved',
-  REJECTED: 'rejected',
-});
-
-export const ACTIVITY_PRIORITY = Object.freeze({
-  HIGH: 3,
-  MEDIUM: 2,
-  LOW: 1,
+export const LOGIN_TYPES =Object.freeze({
+  GOOGLE: "GOOGLE",
+  GITHUB: "GITHUB",
+  EMAIL_PASSWORD: "EMAIL_PASSWORD",
 });

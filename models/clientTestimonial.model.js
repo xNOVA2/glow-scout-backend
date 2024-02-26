@@ -3,7 +3,6 @@ import mongoose from 'mongoose'
 const clientTestimonialSchema = new mongoose.Schema({
   name: {
     type: String,
-    
   },
   testimonial: {
     type: String,

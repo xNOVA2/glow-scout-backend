@@ -7,7 +7,7 @@ import requestIp from "request-ip";
 import connectDB from "./config/database.config.js";
 import { log, rateLimiter, notFound, errorHandler } from "./middlewares/index.js";
 import API from "./routes/index.js";
-
+import  passport  from "passport";
 // initialize environment variables
 dotenv.config();
 
@@ -35,6 +35,8 @@ app.use(cookieSession({
 }));
 app.use(cors({ origin: "*", credentials: true }));
 app.use(rateLimiter);
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
 
 app.get('/', (req, res) => res.json({ message: `${process.env.APP_NAME} - API`, data: null }));
 

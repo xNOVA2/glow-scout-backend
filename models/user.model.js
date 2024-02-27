@@ -6,36 +6,68 @@ import { ROLES } from "../utils/constants.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+// social links schema
+const socialLinks = new Schema({
+    platform: { type: String, enum: ['facebook', 'instagram', 'snapchat'] },
+    url: { type: String }
+}, { _id: false });
+
+// business timing schema
+const businessTiming = new Schema({
+    Monday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Tuesday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Wednesday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Thursday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Friday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Saturday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Sunday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+}, { _id: false });
+
 // user schema
 const userSchema = new Schema({
     name: { type: String },
-    email: { type: String, lowercase: true},
+    email: { type: String, lowercase: true },
     password: { type: String, select: false },
     role: { type: String, enum: Object.values(ROLES), default: "user" },
-    profileImage: { type: String},
+    profileImage: { type: String },
     isDeleted: { type: Boolean, default: false },
-    otp: { type: Number },
+    otp: { type: Number, select: false },
     otpExpiry: { type: Date, select: false },
     alternateEmail: { type: String },
     businessEmail: { type: String },
     phone: { type: String },
-    links: [{
-        platform: { type: String, enum: ['facebook', 'instagram', 'snapchat'] },
-        url: { type: String }
-    }],
+    links: { type: [socialLinks], default: [] },
     city: { type: String },
-    businessTiming: [{
-        day: { type: String, enum: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
-        timing: { type: String, default: "00:00 to 00:00" }
-    }],
-    rating: [{ type: Number }], 
-    // these images related to business dashboard of spas
-    showcaseImage1: {
-        type: String,
-    },
-    showcaseImage2: {
-        type: String,
-    },
+    businessTiming: businessTiming,
+    showcaseImages: { type: [String], default: [] },
 }, { timestamps: true });
 
 // hash password before saving
@@ -57,7 +89,7 @@ userSchema.methods.generateAccessToken = function () {
             id: this._id,
             email: this.email,
             role: this.role,
-            name:this.name
+            name: this.name
         },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION }
@@ -75,13 +107,13 @@ export const createUser = (obj) => UserModel.create(obj);
 // update user
 export const updateUser = (id, data) => UserModel.findByIdAndUpdate(id, data, { new: true });
 // find user by query
-export const findUser = (query) => UserModel.findOne({...query,isDeleted:false});
+export const findUser = (query) => UserModel.findOne({ ...query, isDeleted: false });
 
 // get all users
 export const getAllUsers = async ({ query, page, limit }) => {
     const { data, pagination } = await getMongoosePaginatedData({
         model: UserModel,
-        query:   {...query,isDeleted:false},
+        query: { ...query, isDeleted: false },
         page,
         limit,
 
@@ -98,7 +130,7 @@ export const deleteUserById = (id) => UserModel.findByIdAndDelete(id)
 export const getAllSpas = async ({ query, page, limit }) => {
     const { data, pagination } = await getMongoosePaginatedData({
         model: UserModel,
-        query:   {...query,role:ROLES.BUSINESS},
+        query: { ...query, role: ROLES.BUSINESS },
         page,
         limit,
     });

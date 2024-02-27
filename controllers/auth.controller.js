@@ -15,7 +15,6 @@ export const register = asyncHandler(async (req, res, next) => {
 
 // Login user API
 export const login = asyncHandler(async (req, res, next) => {
-
     let user = await findUser({ email: req.body.email }).select('+password');
 
     if (!user) return next({
@@ -63,7 +62,7 @@ export const otpGenerate = asyncHandler(async (req, res, next) => {
 
     await user.save();
 
-    generateResponse(otp, "OTP generated sucessfully", res);
+    generateResponse(otp, "OTP generated successfully", res);
 })
 
 // OTP VERIFY API

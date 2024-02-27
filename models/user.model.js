@@ -15,7 +15,7 @@ const userSchema = new Schema({
     profileImage: { type: String},
     isDeleted: { type: Boolean, default: false },
     otp: { type: Number },
-    otpExpiry: { type: Date },
+    otpExpiry: { type: Date, select: false },
     alternateEmail: { type: String },
     businessEmail: { type: String },
     phone: { type: String },

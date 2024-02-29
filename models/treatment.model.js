@@ -24,6 +24,7 @@ const treatmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'goal',
     }
+  
 }, {timestamps: true,versionKey: false,});
 
 treatmentSchema.plugin(mongoosePaginate);
@@ -34,8 +35,16 @@ const TreatmentModel = mongoose.model('treatment', treatmentSchema);
 
 export const createTreatment = (treatmentData) => TreatmentModel.create(treatmentData)
 
-export const getAllTreatmentOfSingleGoal = (id) => TreatmentModel.find({goal: id}); 
-
+export const getAllTreatmentOfSingleGoal = async ({ query, page, limit,sort,id }) => {
+    const { data, pagination } = await getMongoosePaginatedData({
+        model: TreatmentModel,
+        query:   {...query,goal:id},
+        page,
+        limit,
+        sort
+    });
+    return { data, pagination };
+};
 export const updateTreatmentById = (id, obj) => TreatmentModel.findByIdAndUpdate(id, obj, {new: true,});
 
 export const deleteTreatment = (id) => TreatmentModel.findByIdAndDelete(id)

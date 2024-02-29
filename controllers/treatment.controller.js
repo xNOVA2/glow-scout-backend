@@ -46,15 +46,33 @@ export const addTreatment = asyncHandler(async (req, res, next) => {
 // Get all  the treatment that link with a single goal
 export const getAllTreatmentsOfSingleGoals = asyncHandler(async (req, res, next) => {
 
+    const page = +(req.query.page || 1);
+    const limit = +(req.query.limit || 10);
+    const search = req.query.search || '';
+    const filter = req.query.filter || '';
+
     const goalId = req.params.id;
+
     if (!goalId) {
         return next({
             statusCode: STATUS_CODES.BAD_REQUEST,
             message: 'Goal id is required'
         })
     }
+     let sortDirection = 1; // Default is ascending order (A to Z)
 
-    const treatments = await getAllTreatmentOfSingleGoal(goalId);
+    if (filter.toLowerCase() === 'ztoa') {
+        sortDirection = -1; // Set to -1 for descending order (Z to A)
+    }
+
+    // Pass the search and sort parameters to getAllTreatments function
+    const treatments = await getAllTreatmentOfSingleGoal({
+        id:goalId,
+        query: { title: { $regex: `^${search}`, $options: 'i' } },
+        page,
+        limit,
+        sort: { title: sortDirection } // Sort by title in specified direction
+    });
     generateResponse(treatments, 'Treatments fetched successfully', res);
 
 })
@@ -96,11 +114,6 @@ export const updateTreatment = asyncHandler(async (req, res, next) => {
         })
     }
 
-    if(!req.files?.image || req.files?.image.length===0) return next({
-        statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
-        message: "Image is required",
-      });
-      
       const imageUrl = await uploadOnCloudinary(req.files.image[0].path);
 
         if(!imageUrl){
@@ -109,6 +122,7 @@ export const updateTreatment = asyncHandler(async (req, res, next) => {
                 message: "Image failed why uploading on cloudinary",
                 });
         }
+
     req.body.image = imageUrl.secure_url;
 
     const treatment = await updateTreatmentById(id, req.body);

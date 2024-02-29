@@ -36,6 +36,7 @@ export const login = asyncHandler(async (req, res, next) => {
     user = user.toObject();
     delete user.password;
 
+    res.cookie({session:accessToken})
     generateResponse({ user, accessToken }, 'Login successful', res);
 });
 
@@ -52,15 +53,16 @@ export const otpGenerate = asyncHandler(async (req, res, next) => {
     otpExpiry.setMinutes(otpExpiry.getMinutes() + parseInt(process.env.OTP_EXPIRATION));
 
     const user = await findUser({ email });
-
-    if(!user) return next({
+    console.log("Test")
+    console.log(user);
+    if (!user) return next({
         statusCode: STATUS_CODES.BAD_REQUEST,
         message: 'user does not exist'
     });
 
     user.otp = otp;
     user.otpExpiry = otpExpiry;
-
+    console.log("User Saved",user);
     await user.save();
     
     generateResponse( otp , "OTP generated sucessfully", res);
@@ -121,6 +123,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 export const getCurrentUser = asyncHandler(async(req,res,next)=>{
      
     let user = await findUser({ _id: req.user.id });
+    console.log(req.session.accessToken);
 
     // remove password
     user = user.toObject();
@@ -133,4 +136,45 @@ export const getCurrentUser = asyncHandler(async(req,res,next)=>{
 export const logoutUser = asyncHandler(async(req,res,next)=>{
     req.session = null;
     generateResponse(null, "User logged out sucessfully", res);
+})
+
+
+export const googleAuthHandler = asyncHandler(async (req, res, next) => {
+    // Successful authentication, redirect home.
+    
+    const {email,name,sub } = req.user._json
+
+    const existUser = await findUser({ email:email });
+
+    if(!existUser){
+    // this block will run when user doesnot exist 
+        
+        // create a user 
+        const createdUser = await createUser({email:email,name:name,password:sub,role:"user",loginType:'GOOGLE'});
+
+        let user = createdUser.toObject();
+
+        delete user.password;
+
+        const accessToken = await createdUser.generateAccessToken();
+
+        req.session = { accessToken };
+
+        generateResponse({ user, accessToken }, 'Login successful', res);
+
+    }
+
+    if(existUser.loginType !== 'GOOGLE'){
+        return next({
+            statusCode: STATUS_CODES.BAD_REQUEST,
+            message: `Please login with the ${findUser.loginType} as you previously login with that`
+        });
+    }
+
+    const accessToken = existUser.generateAccessToken();
+
+    req.session = {accessToken};
+    console.log(req.session.accessToken);
+    
+  res.redirect('/')
 })

@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { validateRequest } from "./validate.js";
 import { emailExistsValidator } from "./common.validators.js";
-import { ROLES } from "../utils/constants.js";
+import { LOGIN_TYPES, ROLES } from "../utils/constants.js";
 
 // user register validator
 const userRegisterValidator = Joi.object({
@@ -13,7 +13,8 @@ const userRegisterValidator = Joi.object({
     email: Joi.string().trim().email({ minDomainSegments: 2 }),
     password: Joi.string().required().regex(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z0-9!@#$%^&*()]*$/)
         .message("Password must be at least 6 characters and contain at least one uppercase letter, one digit, and one special character"),
-    role: Joi.string().valid(...Object.values(ROLES)).required(),
+    role: Joi.string().valid(...Object.values(ROLES).filter(role => role !== ROLES)).required(),
+    loginType: Joi.string().valid(...Object.values(LOGIN_TYPES).filter(type => type !== LOGIN_TYPES)).required(),
 });
 
 // user login validator

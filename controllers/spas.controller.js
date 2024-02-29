@@ -1,7 +1,7 @@
 import { generateResponse, asyncHandler } from '../utils/helpers.js';
-import { STATUS_CODES } from '../utils/constants.js';
+import { ROLES, STATUS_CODES } from '../utils/constants.js';
 import { findAllSpasTreatment } from '../models/treatment.model.js';
-import { findUser, getAllSpas, updateUser } from '../models/user.model.js';
+import { findUser, getAllUsers, updateUser } from '../models/index.js';
 
 export const findSpasTreatment = asyncHandler(async (req, res, next) => {
 
@@ -21,14 +21,26 @@ export const fetchSpas = asyncHandler(async (req, res, next) => {
 
     const page = +(req.query.page || 1);
     const limit = +(req.query.limit || 10);
+    const search = req.query.search || '';
+    const filter = req.query.filter || '';
+    let sortDirection = 1; // Default is ascending order (A to Z)
 
-    const  spas = await getAllSpas(({ query: {}, page, limit}));
+    if (filter.toLowerCase() === 'ztoa') {
+        sortDirection = -1; // Set to -1 for descending order (Z to A)
+    }
+
+    const  spas = await getAllUsers((
+        { 
+            query: { name: { $regex: `^${search}`, $options: 'i' } },
+            page, 
+            limit,   
+            sort: { name: sortDirection }, // Sort by title in specified direction
+            role:'business'
+        }
+    ));
 
     generateResponse(spas , "Spas fetched successfully", res);
 })
-
-
-
 
     export const UpdateSpas = asyncHandler(async (req, res, next) => {
         
@@ -50,8 +62,7 @@ export const fetchSpas = asyncHandler(async (req, res, next) => {
             
             const spa = await updateUser(id,data);
             
-            generateResponse(spa, "Spa updated successfully", res);
-            
+            generateResponse(spa, "Spa updated successfully", res);            
     })
 
         export const GetSpa = asyncHandler(async (req, res, next) => {

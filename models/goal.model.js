@@ -22,9 +22,6 @@ goalSchema.plugin(aggregatePaginate);
  // update
  export const updateGoal = (id, updatedData) => GoalModel.findByIdAndUpdate(id, updatedData, {new: true,});
  
- // delete 
- export const deleteGoalById = (id) => GoalModel.findByIdAndDelete(id);
- 
  // get all goals
  export const getAllGoals = async ({ query, page, limit }) => {
     const { data, pagination } = await getMongoosePaginatedData({

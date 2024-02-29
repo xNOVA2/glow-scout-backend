@@ -10,17 +10,28 @@ import {
     findTreatment
 
 } from '../models/index.js';
+import uploadOnCloudinary from '../utils/cloudinary.js';
 
 // Add Treatment API
 export const addTreatment = asyncHandler(async (req, res, next) => {
+
 
     if(!req.files?.image || req.files?.image.length===0) return next({
         statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
         message: "Image is required",
       });
     
-    req.body.image = req.files.image[0].path;
-    
+      const imageUrl = await uploadOnCloudinary(req.files.image[0].path);
+
+      if(!imageUrl){
+          return next({
+              statusCode: STATUS_CODES.BAD_REQUEST,
+              message: "Image failed why uploading on cloudinary",
+              });
+      }
+
+    req.body.image = imageUrl.secure_url;
+  
     let treatment = await findTreatment({ title: req.body.title });
 
     if(!treatment){
@@ -77,13 +88,7 @@ export const fetchTreatments = asyncHandler(async (req, res, next) => {
 export const updateTreatment = asyncHandler(async (req, res, next) => {
  
     const id = req.params.id;
-    if(!req.files?.image || req.files?.image.length===0) return next({
-        statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
-        message: "Image is required",
-      });
-
-      req.body.image = req.files.image[0].path;
-
+    
     if (!id) {
         return next({
             statusCode: STATUS_CODES.BAD_REQUEST,
@@ -91,6 +96,20 @@ export const updateTreatment = asyncHandler(async (req, res, next) => {
         })
     }
 
+    if(!req.files?.image || req.files?.image.length===0) return next({
+        statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
+        message: "Image is required",
+      });
+
+      const imageUrl = await uploadOnCloudinary(req.files.image[0].path);
+
+        if(!imageUrl){
+            return next({
+                statusCode: STATUS_CODES.BAD_REQUEST,
+                message: "Image failed why uploading on cloudinary",
+                });
+        }
+    req.body.image = imageUrl.secure_url;
 
     const treatment = await updateTreatmentById(id, req.body);
 

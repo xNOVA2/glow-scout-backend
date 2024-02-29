@@ -3,7 +3,11 @@ export const ROLES = Object.freeze({
   USER: 'user', // request initiator
   BUSINESS: 'business',
 });
-
+export const LOGIN_TYPES = Object.freeze({
+  EMAIL_PASSWORD: 'EMAIL_PASSWORD',
+  FACEBOOK: 'FACEBOOK',
+  GOOGLE: 'GOOGLE',
+});
 export const STATUS_CODES = Object.freeze({
   SUCCESS: 200,
   CREATED: 201,
@@ -16,25 +20,4 @@ export const STATUS_CODES = Object.freeze({
   UNPROCESSABLE_ENTITY: 422,
   TOO_MANY_REQUESTS: 429,
   INTERNAL_SERVER_ERROR: 500,
-});
-
-export const ACTIVITY_TYPES = Object.freeze({
-  EVENT: 'event',
-  TRAINING: 'training',
-  CLINIC_FACILITATION: 'clinic_facilitation',
-  OTHER: 'other'
-});
-
-export const ACTIVITY_STATUS = Object.freeze({
-  SUBMITTED: 'submitted',
-  INITIATED: 'initiated',
-  UNDER_REVIEW: 'under_review',
-  APPROVED: 'approved',
-  REJECTED: 'rejected',
-});
-
-export const ACTIVITY_PRIORITY = Object.freeze({
-  HIGH: 3,
-  MEDIUM: 2,
-  LOW: 1,
 });

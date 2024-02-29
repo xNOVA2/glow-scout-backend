@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import mongoosePaginate from 'mongoose-paginate-v2';
 import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 import { getMongoosePaginatedData } from "../utils/helpers.js";
-import { ROLES } from "../utils/constants.js";
+import { LOGIN_TYPES, ROLES } from "../utils/constants.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -12,7 +12,8 @@ const userSchema = new Schema({
     email: { type: String, lowercase: true},
     password: { type: String, select: false },
     role: { type: String, enum: Object.values(ROLES), default: "user" },
-    profileImage: { type: String},
+    loginType:{type:String,enum:Object.values(LOGIN_TYPES),default:"EMAIL_PASSWORD"},    
+    profileImage: { type: String },
     isDeleted: { type: Boolean, default: false },
     otp: { type: Number },
     otpExpiry: { type: Date },
@@ -24,18 +25,8 @@ const userSchema = new Schema({
         url: { type: String }
     }],
     city: { type: String },
-    businessTiming: [{
-        day: { type: String, enum: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
-        timing: { type: String, default: "00:00 to 00:00" }
-    }],
-    rating: [{ type: Number }], 
-    // these images related to business dashboard of spas
-    showcaseImage1: {
-        type: String,
-    },
-    showcaseImage2: {
-        type: String,
-    },
+    businessTiming: {type:businessTiming,default:{}},
+    showcaseImages: { type: [String], default: [] },
 }, { timestamps: true });
 
 // hash password before saving
@@ -78,29 +69,14 @@ export const updateUser = (id, data) => UserModel.findByIdAndUpdate(id, data, { 
 export const findUser = (query) => UserModel.findOne({...query,isDeleted:false});
 
 // get all users
-export const getAllUsers = async ({ query, page, limit }) => {
+
+export const getAllUsers = async ({ query, page, limit,sort,role, }) => {
     const { data, pagination } = await getMongoosePaginatedData({
         model: UserModel,
-        query:   {...query,isDeleted:false},
+        query: { ...query, role: role },
         page,
         limit,
-
-    });
-
-    return { data, pagination };
-};
-
-// delete user we will change this to soft delete
-export const deleteUserById = (id) => UserModel.findByIdAndDelete(id)
-
-// Spas Methods
-
-export const getAllSpas = async ({ query, page, limit }) => {
-    const { data, pagination } = await getMongoosePaginatedData({
-        model: UserModel,
-        query:   {...query,role:ROLES.BUSINESS},
-        page,
-        limit,
+        sort,
     });
 
     return { data, pagination };

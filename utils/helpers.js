@@ -132,6 +132,7 @@ export const upload = (folderName) => {
 
 export const getCities = async () =>{
     const response = await fetch('http://storytime.yameenyousuf.com/api/states?countryCode=US');
+    
     const cities = await response.json();
     
     return cities

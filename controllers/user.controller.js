@@ -1,6 +1,6 @@
 import {  updateUser } from "../models/index.js";
 import { asyncHandler, generateResponse } from '../utils/helpers.js';
-
+import uploadOnCloudinary from '../utils/cloudinary.js';
 // get all users
 export const updateUsers = asyncHandler(async (req, res, next) => {
     

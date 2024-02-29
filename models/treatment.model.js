@@ -16,8 +16,10 @@ const treatmentSchema = new mongoose.Schema({
     spas: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
-        
     }],
+    price:{
+        type:String,
+    },
     goal: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'goal',

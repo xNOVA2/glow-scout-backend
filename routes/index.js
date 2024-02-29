@@ -8,6 +8,7 @@ import SettingApi from './setting.route.js';
 import SpasApi from './spas.route.js';
 import UserApi from './user.route.js';
 import TestimonialAPI from './clientTestimonial.route.js';
+import CitiesAPI from './cities.route.js';
 // import UserAPI from './user.route.js';
 
 export default class API {
@@ -27,7 +28,7 @@ export default class API {
         this.routeGroups.push(new SpasApi());
         this.routeGroups.push(new UserApi());
         this.routeGroups.push(new TestimonialAPI());
-
+        this.routeGroups.push(new CitiesAPI());
     }
 
     setContentType(req, res, next) {

@@ -100,7 +100,7 @@ export const updateTreatment = asyncHandler(async (req, res, next) => {
         statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
         message: "Image is required",
       });
-
+      
       const imageUrl = await uploadOnCloudinary(req.files.image[0].path);
 
         if(!imageUrl){

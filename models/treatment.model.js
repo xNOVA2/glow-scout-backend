@@ -24,7 +24,6 @@ const treatmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'goal',
     }
-  
 }, {timestamps: true,versionKey: false,});
 
 treatmentSchema.plugin(mongoosePaginate);

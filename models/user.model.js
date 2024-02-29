@@ -6,6 +6,49 @@ import { LOGIN_TYPES, ROLES } from "../utils/constants.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const socialLinks = new Schema({
+    platform: { type: String, enum: ['facebook', 'instagram', 'snapchat'] },
+    url: { type: String }
+}, { _id: false });
+
+// business timing schema
+const businessTiming = new Schema({
+    Monday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Tuesday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Wednesday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Thursday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Friday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Saturday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+    Sunday: {
+        ON: { type: Boolean, default: false },
+        startTime: { type: String, default: "09:00 AM" },
+        endTime: { type: String, default: "06:00 PM" },
+    },
+}, { _id: false });
 // user schema
 const userSchema = new Schema({
     name: { type: String },
@@ -20,10 +63,7 @@ const userSchema = new Schema({
     alternateEmail: { type: String },
     businessEmail: { type: String },
     phone: { type: String },
-    links: [{
-        platform: { type: String, enum: ['facebook', 'instagram', 'snapchat'] },
-        url: { type: String }
-    }],
+    links: [socialLinks],
     city: { type: String },
     businessTiming: {type:businessTiming,default:{}},
     showcaseImages: { type: [String], default: [] },

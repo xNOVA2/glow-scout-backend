@@ -12,7 +12,6 @@ dotenv.config()
     },
     function(accessToken,refeshToken, profile,cb) {
       
-      // console.log(profile)
      return  cb(null, {...profile,test:"test"});
     }
   ));

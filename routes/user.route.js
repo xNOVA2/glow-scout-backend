@@ -6,6 +6,7 @@ import { UpdateUserValidation } from '../validators/user.validators.js';
 import { upload } from '../utils/helpers.js';
 
 export default class UserApi {
+    
     constructor() {
         this.router = Router();
         this.setupRoutes();

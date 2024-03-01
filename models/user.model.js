@@ -104,7 +104,7 @@ const UserModel = model('user', userSchema);
 export const createUser = (obj) => UserModel.create(obj);
 
 // update user
-export const updateUser = (id, data) => UserModel.findByIdAndUpdate(id, data, { new: true });
+export const updateUser = (id, data) => UserModel.findByIdAndUpdate(id, data,{new:true});
 // find user by query
 export const findUser = (query) => UserModel.findOne({...query,isDeleted:false});
 

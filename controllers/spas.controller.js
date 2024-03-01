@@ -47,6 +47,7 @@ export const UpdateSpas = asyncHandler(async (req, res, next) => {
     _id: { $ne: req.user.id }, 
   });
 
+  
   if (existingUser) {
     return next({
       statusCode: STATUS_CODES.CONFLICT,

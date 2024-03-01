@@ -6,7 +6,7 @@ import { STATUS_CODES } from "../utils/constants.js";
 export const updateUsers = asyncHandler(async (req, res, next) => {
   // Check if user email already exists
 
-  const existingUser = await findUser({ $or: [{ email: req.body.email }, { alternateEmail: req.body.alternateEmail }] });
+  const existingUser = await findUser({ $or: [{ email: req.body.email }] });
 
   if (existingUser && existingUser.id !== req.user.id) {
     return next({
@@ -14,6 +14,7 @@ export const updateUsers = asyncHandler(async (req, res, next) => {
       message: "Email already exists",
     });
   }
+  
   if (req?.files?.profileImage?.length > 0) {
     let imageURL = await uploadOnCloudinary(req.files.profileImage[0].path);
 

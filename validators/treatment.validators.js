@@ -12,7 +12,8 @@ const createTreatmentValidator = Joi.object({
 const updateTreatmentValidator = Joi.object({
     title: Joi.string().trim().required().min(3),
     description: Joi.string().trim().required().min(8),
-    goal:Joi.string().trim().required()
+    goal:Joi.string().trim().required(),
+    price: Joi.string().trim().required()
 });
 
 export const createTreatmentValidation = validateRequest(createTreatmentValidator);

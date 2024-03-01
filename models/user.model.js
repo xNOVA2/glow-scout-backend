@@ -65,7 +65,7 @@ const userSchema = new Schema({
     phone: { type: String },
     links: [socialLinks],
     city: { type: String },
-    businessTiming: {type:businessTiming,default:{}},
+    businessTiming: {type:businessTiming},
     showcaseImages: { type: [String], default: [] },
 }, { timestamps: true });
 

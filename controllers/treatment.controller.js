@@ -137,16 +137,8 @@ export const updateTreatment = asyncHandler(async (req, res, next) => {
 
 // Delete Treatments API
 export const deleteTreatments = asyncHandler(async (req, res, next) => {
-  const user = req.user;
 
   const id = req.params.id;
-
-  if (user.role !== "business") {
-    return next({
-      statusCode: STATUS_CODES.UNAUTHORIZED,
-      message: "You are not authorized to perform this action",
-    });
-  }
 
   if (!id) {
     return next({

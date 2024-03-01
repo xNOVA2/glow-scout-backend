@@ -122,3 +122,4 @@ export const getAllUsers = async ({ query, page, limit,sort,role, }) => {
     return { data, pagination };
 }
 
+

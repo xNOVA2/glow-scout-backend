@@ -42,6 +42,15 @@ export const fetchSpas = asyncHandler(async (req, res, next) => {
 
 export const UpdateSpas = asyncHandler(async (req, res, next) => {
     
+  const existingUser = await findUser({ $or: [{ email: req.body.email }, { businessEmail: req.body.businessEmail }, { alternateEmail: req.body.alternateEmail }] });
+
+  if (existingUser && existingUser.id !== req.user.id) {
+    return next({
+      statusCode: STATUS_CODES.CONFLICT,
+      message: "Email already exists",
+    });
+  }
+  
   if (req?.files?.profileImage?.length > 0) {
     let imageURL = await uploadOnCloudinary(req.files.profileImage[0].path);
 

@@ -16,7 +16,7 @@ export default class SpasApi {
         this.router.get('/', fetchSpas); // all hte spas
         this.router.get('/:id', GetSpa);
         this.router.get('/SimilarTreatments/:id', findSpasTreatment); // all the spas offerering the similar treatment
-        this.router.put('/update',authMiddleware(ROLES.BUSINESS),upload("spas").fields([{name:'profileImage',maxCount:'1'}]),SpasUpdateValidation, UpdateSpas);
+        this.router.put('/update',authMiddleware(ROLES.BUSINESS),upload("spas").fields([{name:'profileImage',maxCount:'1'},{name:'showcaseImages',maxCount:'2'}]),SpasUpdateValidation, UpdateSpas);
 
     }
 

@@ -1,26 +1,33 @@
-import {  updateUser } from "../models/index.js";
+import { updateUser, findUser } from "../models/index.js";
 import { asyncHandler, generateResponse } from '../utils/helpers.js';
 import uploadOnCloudinary from '../utils/cloudinary.js';
-// get all users
+import { STATUS_CODES } from "../utils/constants.js";
 
 export const updateUsers = asyncHandler(async (req, res, next) => {
-    
-    if(req?.files?.profileImage?.length>0) {
-   
-        let imageURL = await uploadOnCloudinary(req.files.profileImage[0].path);
+  // Check if user email already exists
 
-        if(!imageURL){
-          return next({
-            statusCode: STATUS_CODES.BAD_REQUEST,
-            message: "Image failed why uploading on cloudinary",
-          });
-        }
-    
-        req.body.profileImage = imageURL.secure_url
-    
-      }
+  const existingUser = await findUser({ $or: [{ email: req.body.email }, { alternateEmail: req.body.alternateEmail }] });
 
-    const user = await updateUser(req.user.id,req.body);
+  if (existingUser && existingUser.id !== req.user.id) {
+    return next({
+      statusCode: STATUS_CODES.CONFLICT,
+      message: "Email already exists",
+    });
+  }
+  if (req?.files?.profileImage?.length > 0) {
+    let imageURL = await uploadOnCloudinary(req.files.profileImage[0].path);
 
-    generateResponse(user, "User updated successfully", res);
-})
+    if (!imageURL) {
+      return next({
+        statusCode: STATUS_CODES.BAD_REQUEST,
+        message: "Image failed while uploading on cloudinary",
+      });
+    }
+
+    req.body.profileImage = imageURL.secure_url;
+  }
+
+  const user = await updateUser(req.user.id, req.body);
+
+  generateResponse(user, "User updated successfully", res);
+});

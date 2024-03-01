@@ -50,7 +50,7 @@ export const UpdateSpas = asyncHandler(async (req, res, next) => {
       message: "Email already exists",
     });
   }
-  
+
   if (req?.files?.profileImage?.length > 0) {
     let imageURL = await uploadOnCloudinary(req.files.profileImage[0].path);
 
@@ -62,6 +62,23 @@ export const UpdateSpas = asyncHandler(async (req, res, next) => {
     }
 
     req.body.profileImage = imageURL.secure_url;
+  }
+  console.log(req.files);
+  if (req?.files?.showcaseImages?.length > 0) {
+    const showcaseImages = req.files?.showcaseImages;
+
+    if (showcaseImages && showcaseImages.length > 0) {
+      const uploadedPaths = await Promise.all(
+        showcaseImages.map(async (image) => {
+          const imagePath = image.path;
+          const cloudinaryUrl = await uploadOnCloudinary(imagePath);
+          return cloudinaryUrl.secure_url;
+        })
+      );
+
+      // Now, 'uploadedPaths' is an array containing the Cloudinary URLs of the uploaded images
+      req.body.showcaseImages = uploadedPaths;
+    }
   }
   const spa = await updateUser(req.user.id, req.body);
 

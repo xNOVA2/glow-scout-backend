@@ -43,7 +43,7 @@ export const fetchSpas = asyncHandler(async (req, res, next) => {
 export const UpdateSpas = asyncHandler(async (req, res, next) => {
     
   const existingUser = await findUser({
-    $or: [{ email:req.body.email }, { businessEmail:req.body.businessEmail }],
+    $or: [{ email:req.body.email }],
     _id: { $ne: req.user.id }, 
   });
 

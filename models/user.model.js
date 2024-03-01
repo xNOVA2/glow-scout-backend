@@ -61,7 +61,6 @@ const userSchema = new Schema({
     otp: { type: Number },
     otpExpiry: { type: Date },
     alternateEmail: { type: String },
-    businessEmail: { type: String },
     phone: { type: String },
     links: [socialLinks],
     city: { type: String },

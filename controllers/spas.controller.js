@@ -42,9 +42,12 @@ export const fetchSpas = asyncHandler(async (req, res, next) => {
 
 export const UpdateSpas = asyncHandler(async (req, res, next) => {
     
-  const existingUser = await findUser({ $or: [{ email: req.body.email }, { businessEmail: req.body.businessEmail }, { alternateEmail: req.body.alternateEmail }] });
+  const existingUser = await findUser({
+    $or: [{ email:req.body.email }, { businessEmail:req.body.businessEmail }],
+    _id: { $ne: req.user.id }, 
+  });
 
-  if (existingUser && existingUser.id !== req.user.id) {
+  if (existingUser) {
     return next({
       statusCode: STATUS_CODES.CONFLICT,
       message: "Email already exists",

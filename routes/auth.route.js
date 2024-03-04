@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getCurrentUser, login, logoutUser, otpGenerate, otpVerify, register,resetPassword } from '../controllers/index.js';
+import { getCurrentUser, googleAuth, login, logoutGoogleUser, logoutUser, otpGenerate, otpVerify, register,resetPassword } from '../controllers/index.js';
 import { loginValidation, registerValidation,forgotPasswordValidation } from '../validators/index.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { ROLES } from '../utils/constants.js';
@@ -23,14 +23,12 @@ export default class AuthAPI {
         this.router.put('/reset-password', authMiddleware(Object.values(ROLES)),resetPassword);
         this.router.get('/getCurrentUser', authMiddleware(Object.values(ROLES)),getCurrentUser);
         this.router.post('/logout', authMiddleware(Object.values(ROLES)),logoutUser);
-        this.router.get('/googlelogin', passport.authenticate('google', { scope: ['profile'] }));
+
+        // Google Auth
+        this.router.get('/google', passport.authenticate('google', { scope: ['profile','email'] }));
+        this.router.get('/google/callback', passport.authenticate('google'), googleAuth) 
+        this.router.post('/googleLogout',logoutGoogleUser);
      
-        this.router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-            
-            // Redirect the user after successful login
-        console.log("Google API CALEED");
-            res.redirect('/'); // You can change the redirect URL as needed
-        });   
     }
 
     getRouter() {

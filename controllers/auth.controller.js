@@ -20,10 +20,11 @@ export const login = asyncHandler(async (req, res, next) => {
 
     if (!user) return next({
         statusCode: STATUS_CODES.BAD_REQUEST,
-        message: 'Invalid email or password'
+        message: 'Invalid email'
     });
 
     const isMatch = await user.isPasswordCorrect(req.body.password);
+    
     if (!isMatch) return next({
         statusCode: STATUS_CODES.UNAUTHORIZED,
         message: 'Invalid password'
@@ -134,3 +135,43 @@ export const logoutUser = asyncHandler(async(req,res,next)=>{
     req.session = null;
     generateResponse(null, "User logged out sucessfully", res);
 })
+
+export const logoutGoogleUser = asyncHandler(async (req, res, next) => {
+
+      req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect('/');
+      })
+
+});
+
+export const googleAuth = asyncHandler(async (req, res, next) => {
+    console.log("API CALLED");
+
+    const {email,name,picture} = req.user._json
+
+    const isUserExist = await findUser({ email:email });
+    if(isUserExist) {
+       
+        let user = isUserExist;
+
+        if(user.loginType !== "GOOGLE") return next({
+            statusCode: STATUS_CODES.BAD_REQUEST,
+            message: `Please login with ${user.loginType} `
+        });
+
+        const accessToken = await user.generateAccessToken();
+        req.session = { accessToken };
+
+        res.redirect('http://localhost:5007?session='+accessToken);
+    }
+
+    const user = await createUser({email,name,profilePicture:picture})
+
+    const accessToken = await user.generateAccessToken();
+    req.session = { accessToken };
+
+    res.redirect('http://localhost:5007?session='+accessToken);
+
+    generateResponse(req.user, "User logged in sucessfully", res);
+});

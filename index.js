@@ -24,26 +24,46 @@ const PORT = process.env.PORT || 5005;
 const httpServer = createServer(app);
 
 // set up middlewares
+
 app.use(requestIp.mw());
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+
 app.use('/uploads', express.static('uploads'));
 app.use(cookieSession({
   name: 'session',
   keys: [process.env.COOKIE_KEY],
   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(cors({ origin: "*", credentials: true }));
 app.use(rateLimiter);
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
+
 
 app.get('/', (req, res) => res.json({ message: `${process.env.APP_NAME} - API`, data: null }));
+
+// register regenerate & save after the cookieSession middleware initialization
+app.use(function(request, response, next) {
+    if (request.session && !request.session.regenerate) {
+        request.session.regenerate = (cb) => {
+            cb()
+        }
+    }
+    if (request.session && !request.session.save) {
+        request.session.save = (cb) => {
+            cb()
+        }
+    }
+    next()
+})
+// this middleware is required with passport 6.0 it has some bugs until its not fixed this middleware is being use
 
 app.use(log);
 new API(app).registerGroups();
 app.use(notFound);
 app.use(errorHandler);
+ 
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`.yellow.bold);

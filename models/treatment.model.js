@@ -51,10 +51,10 @@ export const getAllTreatments = async ({ query, page, limit,sort }) => {
     return { data, pagination };
 };
 
-export const getAllTreatment = async (id) => {
-    const treatment = await TreatmentModel.findOne({_id:id}).populate('spas');
-    return treatment;
- };
+// export const getAllSpasRelatedTo =  (id) =>  TreatmentModel.findOne({_id:id}).populate('spas');
+   
+
+
  export const findTreatment =  (query) =>  TreatmentModel.findOne(query);
 
 export const findAllSpasTreatment =  (id) =>  TreatmentModel.aggregate([

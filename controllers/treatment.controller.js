@@ -3,12 +3,11 @@ import { STATUS_CODES } from '../utils/constants.js';
 import {
     createTreatment,
     deleteTreatment,
-    getAllTreatment,
     getAllTreatments,
     getAllTreatmentOfSingleGoal,
     updateTreatmentById,
-    findTreatment
-
+    findTreatment,
+getAllUsers
 } from '../models/index.js';
 
 // Add Treatment API
@@ -140,15 +139,13 @@ export const deleteTreatments = asyncHandler(async (req, res, next) => {
 export const getSpasTreatment = asyncHandler(async (req, res, next) => {
     
     const id = req.params.id;
-    if (!id) {
-        return next({
-            statusCode: STATUS_CODES.BAD_REQUEST,
-            message: 'Treatment id is required'
-        });
-    }
+
+    const treatments = await findTreatment({ _id: id }).select('spas');
+
+    const spasIds = treatments.spas;
+    const query = { _id: { $in: spasIds }};
+    const spas = await getAllUsers({query});
+
     
- 
-    const treatments = await getAllTreatment({ _id: id });
-    
-    generateResponse(treatments, 'Spas treatment fetched successfully', res);
+    generateResponse(spas, 'Spas treatment fetched successfully', res);
 });

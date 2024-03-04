@@ -5,7 +5,6 @@ import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { upload } from '../utils/helpers.js';
 import { createTreatmentValidation, updateTreatmentValidation } from '../validators/treatment.validators.js';
 
-
 export default class TreatmentAPI {
     constructor() {
         this.router = Router();

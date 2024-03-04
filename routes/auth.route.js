@@ -5,6 +5,7 @@ import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { ROLES } from '../utils/constants.js';
 import passport from "passport";
 import '../utils/passport.js'
+
 export default class AuthAPI {
     constructor() {
         this.router = Router();

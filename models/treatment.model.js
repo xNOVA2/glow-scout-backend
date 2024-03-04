@@ -21,8 +21,10 @@ const treatmentSchema = new mongoose.Schema({
     goal: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'goal',
+    },
+    price:{
+        type:String,
     }
-  
 }, {timestamps: true,versionKey: false,});
 
 treatmentSchema.plugin(mongoosePaginate);

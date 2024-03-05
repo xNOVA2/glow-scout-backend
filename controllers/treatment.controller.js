@@ -177,7 +177,7 @@ export const getSpasTreatment = asyncHandler(async (req, res, next) => {
 
   const spasIds = treatments.spas;
   const query = {
-    $and: [
+    $or: [
       { _id: { $in: spasIds } },
       { title: { $regex: `^${search}`, $options: "i" } }
     ]

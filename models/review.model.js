@@ -22,3 +22,6 @@ const reviewSchema = new mongoose.Schema({
 
 // Create the review model
 const Review = mongoose.model('Review', reviewSchema);
+
+export const createReview = (obj) => Review.create(obj)
+export const fetchReview = () => Review.find().populate('from').populate('to')

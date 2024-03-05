@@ -161,16 +161,36 @@ export const deleteTreatments = asyncHandler(async (req, res, next) => {
 
 // get all the Spas that Link with a Treatment
 export const getSpasTreatment = asyncHandler(async (req, res, next) => {
-    
   const id = req.params.id;
+  const page = +(req.query.page || 1);
+  const limit = +(req.query.limit || 10);
+  const search = req.query.search || "";
+  const filter = req.query.filter || "";
+
+  let sortDirection = 1; // Default is ascending order (A to Z)
+
+  if (filter.toLowerCase() === "ztoa") {
+    sortDirection = -1; // Set to -1 for descending order (Z to A)
+  }
 
   const treatments = await findTreatment({ _id: id }).select('spas');
 
   const spasIds = treatments.spas;
-  const query = { _id: { $in: spasIds }};
-  const spas = await getAllUsers({query,role:'business'});
+  const query = {
+    $and: [
+      { _id: { $in: spasIds } },
+      { title: { $regex: `^${search}`, $options: "i" } }
+    ]
+  };
 
-  
+  const spas = await getAllUsers({
+    query,
+    role: 'business',
+    page,
+    limit,
+    sort: { name: sortDirection }
+  });
+
   generateResponse(spas, 'Spas treatment fetched successfully', res);
 });
 

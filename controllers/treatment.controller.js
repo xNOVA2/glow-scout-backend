@@ -3,11 +3,11 @@ import { STATUS_CODES } from "../utils/constants.js";
 import {
   createTreatment,
   deleteTreatment,
-  getAllTreatment,
   getAllTreatments,
   getAllTreatmentOfSingleGoal,
   updateTreatmentById,
   findTreatment,
+  getAllUsers,
 } from "../models/index.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 
@@ -161,15 +161,16 @@ export const deleteTreatments = asyncHandler(async (req, res, next) => {
 
 // get all the Spas that Link with a Treatment
 export const getSpasTreatment = asyncHandler(async (req, res, next) => {
+    
   const id = req.params.id;
-  if (!id) {
-    return next({
-      statusCode: STATUS_CODES.BAD_REQUEST,
-      message: "Treatment id is required",
-    });
-  }
 
-  const treatments = await getAllTreatment({ _id: id });
+  const treatments = await findTreatment({ _id: id }).select('spas');
 
-  generateResponse(treatments, "Spas treatment fetched successfully", res);
+  const spasIds = treatments.spas;
+  const query = { _id: { $in: spasIds }};
+  const spas = await getAllUsers({query,role:'business'});
+
+  
+  generateResponse(spas, 'Spas treatment fetched successfully', res);
 });
+

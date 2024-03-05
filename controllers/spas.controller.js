@@ -1,19 +1,30 @@
 import { generateResponse, asyncHandler } from "../utils/helpers.js";
 import { ROLES, STATUS_CODES } from "../utils/constants.js";
-import { findAllSpasTreatment } from "../models/treatment.model.js";
+import {  getAllTreatments } from "../models/treatment.model.js";
 import { findUser, getAllUsers, updateUser } from "../models/index.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 
 export const findSpasTreatment = asyncHandler(async (req, res, next) => {
-  const id = req.params.id;
+  
+  const page = +(req.query.page || 1);
+  const limit = +(req.query.limit || 10);
+  const search = req.query.search || "";
+  const filter = req.query.filter || "";
+  let sortDirection = 1; // Default is ascending order (A to Z)
 
-  if (!id)
-    return next({
-      message: "Id not found",
-      statusCode: STATUS_CODES.NOT_FOUND,
-    });
+  if (filter.toLowerCase() === "ztoa") {
+    sortDirection = -1; // Set to -1 for descending order (Z to A)
+  }
 
-  const spas = await findAllSpasTreatment(id);
+  const spas = await getAllTreatments({
+    query: {
+      title: { $regex: `^${search}`, $options: "i" },
+      spas: req.params.id
+    },
+    page,
+    limit,
+    sort: { title: sortDirection }
+  });
 
   generateResponse(spas, "Spas Treatment fetched successfully", res);
 });

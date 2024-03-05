@@ -20,7 +20,7 @@ const userRegisterValidator = Joi.object({
 // user login validator
 const userLoginValidator = Joi.object({
     email: Joi.string().trim().email({ minDomainSegments: 2 }),
-    password: Joi.string().required()
+    password: Joi.string().required(),
 });
 
 const userForgotPasswordValidator = Joi.object({

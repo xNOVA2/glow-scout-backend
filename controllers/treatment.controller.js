@@ -165,7 +165,7 @@ export const getSpasTreatment = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
 
   const treatments = await findTreatment({ _id: id }).select('spas');
-
+  
   const spasIds = treatments.spas;
   const query = { _id: { $in: spasIds }};
   const spas = await getAllUsers({query,role:'business'});

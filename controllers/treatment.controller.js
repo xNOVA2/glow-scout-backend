@@ -165,7 +165,7 @@ export const getSpasTreatment = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
 
   const treatments = await findTreatment({ _id: id }).select('spas');
-  
+
   const spasIds = treatments.spas;
   const query = { _id: { $in: spasIds }};
   const spas = await getAllUsers({query,role:'business'});
@@ -174,3 +174,9 @@ export const getSpasTreatment = asyncHandler(async (req, res, next) => {
   generateResponse(spas, 'Spas treatment fetched successfully', res);
 });
 
+export const singleTreatment = asyncHandler(async (req, res, next) => {
+
+  const treatment = await findTreatment({_id:req.params.id});
+  
+  generateResponse(treatment, 'Treatment fetched successfully', res);
+}); 

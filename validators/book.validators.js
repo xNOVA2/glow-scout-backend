@@ -10,7 +10,7 @@ const bookTreatmentValidator = Joi.object({
     address: Joi.string().required(),
     comment: Joi.string().optional(),
     date: Joi.date().required(),
-    time: Joi.string().trim().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9] [AP]M$/),
+    time: Joi.string().trim().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9] [AP]M$/).required(),
     spa: Joi.string().required(),
     treatment: Joi.string().required(),
 });

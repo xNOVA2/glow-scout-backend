@@ -37,7 +37,20 @@ app.use(cors({ origin: "*", credentials: true }));
 app.use(rateLimiter);
 
 app.get('/', (req, res) => res.json({ message: `${process.env.APP_NAME} - API`, data: null }));
-
+// register regenerate & save after the cookieSession middleware initialization
+app.use(function(request, response, next) {
+  if (request.session && !request.session.regenerate) {
+      request.session.regenerate = (cb) => {
+          cb()
+      }
+  }
+  if (request.session && !request.session.save) {
+      request.session.save = (cb) => {
+          cb()
+      }
+  }
+  next()
+})
 app.use(log);
 new API(app).registerGroups();
 app.use(notFound);

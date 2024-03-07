@@ -3,8 +3,6 @@ import { getCurrentUser, googleAuthHandler, login, logoutUser, otpGenerate, otpV
 import { loginValidation, registerValidation, forgotPasswordValidation } from '../validators/index.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { ROLES } from '../utils/constants.js';
-import passport from "passport";
-import '../utils/passport.js'
 
 export default class AuthAPI {
     constructor() {
@@ -22,9 +20,8 @@ export default class AuthAPI {
         this.router.post('/logout', authMiddleware(Object.values(ROLES)), logoutUser);
 
         // Googles routes for google authenticate
-        this.router.get('/google', passport.authenticate('google', { scope: ['profile','email'] }));
+        this.router.get('/google', googleAuthHandler);
 
-        this.router.get('/google/callback', passport.authenticate('google',{ failureRedirect: 'http://localhost:5007/api' }),googleAuthHandler ) 
        
      
 

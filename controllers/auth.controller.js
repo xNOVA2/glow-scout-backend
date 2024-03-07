@@ -139,42 +139,26 @@ export const logoutUser = asyncHandler(async(req,res,next)=>{
 })
 
 
-export const googleAuthHandler = asyncHandler(async (req, res, next) => {
-    // Successful authentication, redirect home.
+export const googleAuthHandler = asyncHandler(async(req,res,next)=>{
     
-    const {email,name,sub } = req.user._json
+    const {email} = req.body;
 
-    const existUser = await findUser({ email:email });
+    const user = await findUser({email:email});
 
-    if(!existUser){
-    // this block will run when user doesnot exist 
-        
-        // create a user 
-        const createdUser = await createUser({email:email,name:name,password:sub,role:"user",loginType:'GOOGLE'});
+    if(user){
 
-        let user = createdUser.toObject();
-
-        delete user.password;
-
-        const accessToken = await createdUser.generateAccessToken();
-
-        req.session = { accessToken };
-
-        generateResponse({ user, accessToken }, 'Login successful', res);
-
-    }
-
-    if(existUser.loginType !== 'GOOGLE'){
-        return next({
+        if(user.loginType !== "google") return next({
             statusCode: STATUS_CODES.BAD_REQUEST,
-            message: `Please login with the ${findUser.loginType} as you previously login with that`
+            message: 'User previously  login/sign with email and password'
         });
+
+        const accessToken = await user.generateAccessToken();
+        req.session = { accessToken };
+        generateResponse({ user, accessToken }, 'Login successful', res);
     }
 
-    const accessToken = existUser.generateAccessToken();
-
-    req.session = {accessToken};
-    console.log(req.session.accessToken);
-    
-  res.redirect('/')
+    user = await createUser(req.body);
+    const accessToken = await user.generateAccessToken();
+    req.session = { accessToken };
+    generateResponse({ user, accessToken }, 'Login successful', res);
 })

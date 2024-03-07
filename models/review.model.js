@@ -5,7 +5,6 @@ import mongoose from mongoose
 const reviewSchema = new mongoose.Schema({
     rating: {
         type: Number,
-        
     },
     description: {
         type: String,
@@ -17,7 +16,11 @@ const reviewSchema = new mongoose.Schema({
     to:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'user'
-    }
+    },
+    isFeatured: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 // Create the review model

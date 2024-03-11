@@ -1,6 +1,7 @@
 import { generateResponse, asyncHandler, generateRandomOTP } from '../utils/helpers.js';
 import { createUser, findUser } from '../models/index.js';
 import { STATUS_CODES } from '../utils/constants.js';
+import Mailer from '../utils/email.js';
 
 // Register user API
 export const register = asyncHandler(async (req, res, next) => {
@@ -53,8 +54,7 @@ export const otpGenerate = asyncHandler(async (req, res, next) => {
     otpExpiry.setMinutes(otpExpiry.getMinutes() + parseInt(process.env.OTP_EXPIRATION));
 
     const user = await findUser({ email });
-    console.log("Test")
-    console.log(user);
+
     if (!user) return next({
         statusCode: STATUS_CODES.BAD_REQUEST,
         message: 'user does not exist'
@@ -62,9 +62,13 @@ export const otpGenerate = asyncHandler(async (req, res, next) => {
 
     user.otp = otp;
     user.otpExpiry = otpExpiry;
-    console.log("User Saved",user);
     await user.save();
     
+   await Mailer.sendEmail({
+        email: email,
+        subject: "OTP for password reset",
+        message: `Your OTP is ${otp}`
+    });
     generateResponse( otp , "OTP generated sucessfully", res);
 })
 

@@ -54,3 +54,5 @@ export const loginValidation = validateRequest(userLoginValidator);
 export const forgotPasswordValidation = validateRequest(
   userForgotPasswordValidator
 );
+
+export const googleAuthValidation = validateRequest(googleAuthValidator)

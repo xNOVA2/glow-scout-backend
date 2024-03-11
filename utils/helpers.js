@@ -137,3 +137,6 @@ export const getCities = async () =>{
     
     return cities
 }
+
+
+

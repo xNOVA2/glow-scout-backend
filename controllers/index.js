@@ -7,4 +7,5 @@ export * from './setting.controller.js'
 export * from './spas.controller.js'
 export * from './clientTestimonial.controller.js'
 export * from './book.controller.js'
+export * from './stripe.controller.js'
 

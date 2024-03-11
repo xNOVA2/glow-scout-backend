@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import colors from "colors";
-import { asyncHandler, createDefaultAdmin } from '../utils/helpers.js';
+import { asyncHandler } from '../utils/helpers.js';
 
 
 const connectDB = asyncHandler(async () => {
@@ -10,7 +10,7 @@ const connectDB = asyncHandler(async () => {
         console.log(`MongoDB Connected -> : ${conn.connection.name}`.cyan.bold);
 
         // create default admin
-        await createDefaultAdmin();
+        // await createDefaultAdmin();
     } catch (error) {
         console.error(`Error: ${error.message}`.red.bold);
         process.exit(1);

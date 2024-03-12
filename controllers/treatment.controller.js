@@ -168,7 +168,6 @@ export const getSpasTreatment = asyncHandler(async (req, res, next) => {
   const filter = req.query.filter || "";
 
   let sortDirection = 1; // Default is ascending order (A to Z)
-
   if (filter.toLowerCase() === "ztoa") {
     sortDirection = -1; // Set to -1 for descending order (Z to A)
   }
@@ -176,10 +175,11 @@ export const getSpasTreatment = asyncHandler(async (req, res, next) => {
   const treatments = await findTreatment({ _id: id }).select('spas');
 
   const spasIds = treatments.spas;
+  
   const query = {
-    $or: [
+    $and: [
       { _id: { $in: spasIds } },
-      { title: { $regex: `^${search}`, $options: "i" } }
+      { name: { $regex: `^${search}`, $options: "i" } }
     ]
   };
 

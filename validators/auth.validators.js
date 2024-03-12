@@ -39,7 +39,7 @@ const userOtpVerifyValidator = Joi.object({
 
 const googleAuthValidator = Joi.object({
   email: Joi.string().trim().email({ minDomainSegments: 2 }),
-  username: Joi.string().trim().required(),
+  name: Joi.string().trim().required(),
   profileImage: Joi.string().uri().required(),
   role: Joi.string()
     .valid(...Object.values(ROLES).filter((role) => role !== ROLES))

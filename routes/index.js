@@ -11,6 +11,7 @@ import TestimonialAPI from './clientTestimonial.route.js';
 import CitiesAPI from './cities.route.js';
 import BookAPI from './book.route.js';
 import SubcriptionAPI from './stripe.route.js';
+import ReviewAPI from './review.route.js';
 // import UserAPI from './user.route.js';
 
 export default class API {
@@ -33,6 +34,7 @@ export default class API {
         this.routeGroups.push(new CitiesAPI());
         this.routeGroups.push(new BookAPI());
         this.routeGroups.push(new SubcriptionAPI());
+        this.routeGroups.push(new ReviewAPI());
     }
 
     setContentType(req, res, next) {

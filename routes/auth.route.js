@@ -20,7 +20,7 @@ export default class AuthAPI {
         this.router.post('/logout', authMiddleware(Object.values(ROLES)), logoutUser);
 
         // Googles routes for google authenticate
-        this.router.get('/google', googleAuthValidation ,googleAuthHandler);
+        this.router.post('/google', googleAuthValidation ,googleAuthHandler);
 
        
      

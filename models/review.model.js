@@ -23,3 +23,35 @@ const Review = mongoose.model('Review', reviewSchema);
 
 export const createReview = (obj) => Review.create(obj)
 export const fetchReview = (query) => Review.find(query).populate('from')
+
+export const totalReviews = (id) => Review.aggregate([
+    {
+        $match: {
+            to: new mongoose.Types.ObjectId(id)
+        }
+    },
+    {
+        $group: {
+            _id: null,
+            total: { $sum: 1 },
+            goodReviews: {
+                $sum: {
+                    $cond: {
+                        if: { $gte: ["$rating", 2] },
+                        then: 1,
+                        else: 0
+                    }
+                }
+            },
+            badReviews: {
+                $sum: {
+                    $cond: {
+                        if: { $lt: ["$rating", 2] }, 
+                        then: 1,
+                        else: 0
+                    }
+                }
+            }
+        }
+    }
+]);

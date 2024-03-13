@@ -12,6 +12,7 @@ import CitiesAPI from './cities.route.js';
 import BookAPI from './book.route.js';
 import SubcriptionAPI from './stripe.route.js';
 import ReviewAPI from './review.route.js';
+import AnalyticsAPI from './analytics.route.js';
 // import UserAPI from './user.route.js';
 
 export default class API {
@@ -35,6 +36,7 @@ export default class API {
         this.routeGroups.push(new BookAPI());
         this.routeGroups.push(new SubcriptionAPI());
         this.routeGroups.push(new ReviewAPI());
+        this.routeGroups.push(new AnalyticsAPI())
     }
 
     setContentType(req, res, next) {

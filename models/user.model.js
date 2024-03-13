@@ -122,3 +122,18 @@ export const getAllUsers = async ({ query, page, limit,sort,role, }) => {
 }
 
 
+// analytics for spas
+
+export const getTreatmentCount = UserModel.aggregate(
+    {
+        $match: { role: "business" }
+    },
+    {
+        $group: {
+            _id: "$_id",
+            treatmentCount: { $sum: { $size: "$treatments" } }
+        }
+    }
+    )
+
+

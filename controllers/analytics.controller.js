@@ -11,30 +11,34 @@ export const getTreatmentCount = asyncHandler(async (req, res, next) => {
   const Likes = await getLikeCount(req.user.id);
 
   generateResponse(
-    { count, reviews: Reviews, vistedList,Likes },
+    { count, reviews: Reviews, vistedList, Likes },
     "Analytics Reports",
     res
   );
 });
 
-
 export const visitSpa = asyncHandler(async (req, res, next) => {
-    const visit = await addVisitedSpa(req.body);
-    generateResponse(visit, "Spa visited", res);
-    });
+  const visit = await addVisitedSpa(req.body);
+  generateResponse(visit, "Spa visited", res);
+});
 
-    export const createLikes = asyncHandler(async (req, res, next) => {
-      
-            const like = await findLike({ spa: req.body.spa, user: req.user.id });
-            
-            if (like) {
-                like.liked = !like.liked;
-                await like.save();
-                generateResponse({ message: like },`${like.liked?'Liked':'disliked'}`, res);
-            } else {
-                const newLike = await createLike({ spa: req.body.spa, user: req.user.id, liked: true });
-                generateResponse(newLike,"Like the spa", res);
-            }
-  
-        
+export const createLikes = asyncHandler(async (req, res, next) => {
+  const like = await findLike({ spa: req.body.spa, user: req.user.id });
+
+  if (like) {
+    like.liked = !like.liked;
+    await like.save();
+    generateResponse(
+      { message: like },
+      `${like.liked ? "Liked" : "disliked"}`,
+      res
+    );
+  } else {
+    const newLike = await createLike({
+      spa: req.body.spa,
+      user: req.user.id,
+      liked: true,
     });
+    generateResponse(newLike, "Like the spa", res);
+  }
+});

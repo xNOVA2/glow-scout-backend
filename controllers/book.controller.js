@@ -12,11 +12,17 @@ export const createBookTreatment =  asyncHandler(async (req, res, next) => {
         statusCode: STATUS_CODES.BAD_REQUEST,
         message: 'spa does not exist'
     });
-
+    const admin = await findUser({role:"admin"})
+    
     await Mailer.sendEmail({
-        email: spa.email,
+        email: admin.email,
         subject: "Booking Confirmation",
-        message: `Your spa has been booked for ${req.body.treatment} at ${req.body.date} on ${req.body.time} with ${req.body.spa}. `
+        message: `The  spa has been booked for a Treatment at ${req.body.date} on ${req.body.time}
+        <hr/>
+        ${spa.name}
+        ${spa.email}
+        
+        `
     });
 
     const book = await bookTreatment(req.body);

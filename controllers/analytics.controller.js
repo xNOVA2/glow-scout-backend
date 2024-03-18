@@ -23,6 +23,7 @@ export const visitSpa = asyncHandler(async (req, res, next) => {
 });
 
 export const createLikes = asyncHandler(async (req, res, next) => {
+
   const like = await findLike({ spa: req.body.spa, user: req.user.id });
 
   if (like) {
@@ -41,4 +42,9 @@ export const createLikes = asyncHandler(async (req, res, next) => {
     });
     generateResponse(newLike, "Like the spa", res);
   }
+});
+
+export const isLiked = asyncHandler(async (req, res, next) => {
+  const like = await findLike({ spa: req.params.id, user: req.user.id });
+  generateResponse(like, "Like the spa", res);
 });

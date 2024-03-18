@@ -44,4 +44,6 @@ export const findBlog = (query) => BlogModel.findOne(query)
 
 export const updateBlog = (id, update) => BlogModel.findByIdAndUpdate(id, update)
 
-export const deleteBlog = (id) => BlogModel.findByIdAndDelete(id)
+export const deleteBlog = (id) => BlogModel.findByIdAndDelete(id);
+
+

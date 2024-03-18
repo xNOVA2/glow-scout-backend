@@ -5,6 +5,7 @@ dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+
 export const subscription = asyncHandler(async (req, res, next) => {
       let customer;
 
@@ -32,7 +33,6 @@ export const subscription = asyncHandler(async (req, res, next) => {
       });
 
       generateResponse(subscription, "Subscription created successfully", res);
- 
 });
 
 export const createStripeSession = asyncHandler(async (req, res, next) => {

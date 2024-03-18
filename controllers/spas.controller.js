@@ -34,22 +34,27 @@ export const fetchSpas = asyncHandler(async (req, res, next) => {
   const limit = +(req.query.limit || 10);
   const search = req.query.search || "";
   const filter = req.query.filter || "";
-  const role = req.query.role || 'business'
-  let sortDirection = 1; // Default is ascending order (A to Z)
+  const address = req.query.location || "";
+  let sortField = "name"; // Default sort field is name
+  let sortDirection = 1; // Default sort direction is ascending (A to Z)
 
   if (filter.toLowerCase() === "ztoa") {
     sortDirection = -1; // Set to -1 for descending order (Z to A)
+  }
+  if (filter.toLowerCase() === "desc") {
+    sortField = "rating"; // Sort by rating if rating query is present
+    sortDirection = -1; // Set to -1 for descending order
   }
 
   const spas = await getAllUsers({
     query: { name: { $regex: `^${search}`, $options: "i" } },
     page,
     limit,
-    sort: { name: sortDirection }, 
-    role: role,
+    sort: { [sortField]: sortDirection },
+    address: `^${address}`,
   });
 
-  generateResponse(spas, `${role=='business'?'Spas fetched successfully':'Users fetched successfully'}`, res);
+  generateResponse(spas, `Spas fetched successfully`, res);
 });
 
 export const UpdateSpas = asyncHandler(async (req, res, next) => {

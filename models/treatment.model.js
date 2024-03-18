@@ -27,6 +27,10 @@ const treatmentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "goal",
     },
+    isFeatured:{
+      type:Boolean,
+      default:false
+    }
   },
   { timestamps: true, versionKey: false }
 );

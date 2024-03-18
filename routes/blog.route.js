@@ -3,6 +3,7 @@ import { createBlogPost,updateBlogPost,fetchBlogs,getBlog,deleteBlogPost } from 
 import {addBlogValidation,updateBlogValidation} from '../validators/index.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { ROLES } from '../utils/constants.js';
+import { upload } from '../utils/helpers.js';
 
 export default class BlogApi {
     constructor() {
@@ -13,9 +14,9 @@ export default class BlogApi {
     setupRoutes() {
         this.router.get('/', fetchBlogs);
         this.router.get('/:id', getBlog);
-        this.router.put('/update/:id',authMiddleware(ROLES.ADMIN), updateBlogValidation, updateBlogPost);
+        this.router.put('/update/:id',authMiddleware(ROLES.ADMIN),upload("blog").fields([{name:'coverPicture',maxCount:'1'}]), updateBlogValidation, updateBlogPost);
         this.router.delete('/delete/:id',authMiddleware(ROLES.ADMIN), deleteBlogPost);
-        this.router.post('/create',authMiddleware(ROLES.ADMIN), addBlogValidation, createBlogPost);
+        this.router.post('/create',authMiddleware(ROLES.ADMIN), upload("blog").fields([{name:'coverPicture',maxCount:'1'}]),addBlogValidation, createBlogPost);
 
     }
 

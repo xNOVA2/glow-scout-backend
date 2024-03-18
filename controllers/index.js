@@ -9,4 +9,4 @@ export * from './clientTestimonial.controller.js'
 export * from './book.controller.js'
 export * from './stripe.controller.js'
 export * from './review.controller.js'
-
+export * from './home.controller.js'

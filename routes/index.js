@@ -13,6 +13,7 @@ import BookAPI from './book.route.js';
 import SubcriptionAPI from './stripe.route.js';
 import ReviewAPI from './review.route.js';
 import AnalyticsAPI from './analytics.route.js';
+import HomeAPI from './home.route.js';
 // import UserAPI from './user.route.js';
 
 export default class API {
@@ -37,6 +38,7 @@ export default class API {
         this.routeGroups.push(new SubcriptionAPI());
         this.routeGroups.push(new ReviewAPI());
         this.routeGroups.push(new AnalyticsAPI())
+        this.routeGroups.push(new HomeAPI())
     }
 
     setContentType(req, res, next) {

@@ -34,6 +34,7 @@ export const fetchSpas = asyncHandler(async (req, res, next) => {
   const limit = +(req.query.limit || 10);
   const search = req.query.search || "";
   const filter = req.query.filter || "";
+  const role = req.query.role || 'business'
   let sortDirection = 1; // Default is ascending order (A to Z)
 
   if (filter.toLowerCase() === "ztoa") {
@@ -44,11 +45,11 @@ export const fetchSpas = asyncHandler(async (req, res, next) => {
     query: { name: { $regex: `^${search}`, $options: "i" } },
     page,
     limit,
-    sort: { name: sortDirection }, // Sort by title in specified direction
-    role: "business",
+    sort: { name: sortDirection }, 
+    role: role,
   });
 
-  generateResponse(spas, "Spas fetched successfully", res);
+  generateResponse(spas, `${role=='business'?'Spas fetched successfully':'Users fetched successfully'}`, res);
 });
 
 export const UpdateSpas = asyncHandler(async (req, res, next) => {
@@ -78,7 +79,6 @@ export const UpdateSpas = asyncHandler(async (req, res, next) => {
 
     req.body.profileImage = imageURL.secure_url;
   }
-  console.log(req.files);
   if (req?.files?.showcaseImages?.length > 0) {
     const showcaseImages = req.files?.showcaseImages;
 
@@ -91,7 +91,7 @@ export const UpdateSpas = asyncHandler(async (req, res, next) => {
         })
       );
 
-      // Now, 'uploadedPaths' is an array containing the Cloudinary URLs of the uploaded images
+      
       req.body.showcaseImages = uploadedPaths;
     }
   }
@@ -110,12 +110,6 @@ export const GetSpa = asyncHandler(async (req, res, next) => {
     });
 
   const spa = await findUser({ _id: id });
-
-  if (!spa)
-    return next({
-      message: "Spa not found",
-      statusCode: STATUS_CODES.NOT_FOUND,
-    });
 
   generateResponse(spa, "Spa fetched successfully", res);
 });

@@ -70,6 +70,7 @@ const userSchema = new Schema({
     customerId:{type:String},
     subscription:{type:String,enum:["active","disable"],default:"disable"},
     tier:{type:String,enum:["silver","premium","gold","none"],default:"none"},
+    subscriptionId:{type:String,default:null},
     rating:{
         type:Number,
         default:0

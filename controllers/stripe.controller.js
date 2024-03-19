@@ -26,7 +26,7 @@ export const subscription = asyncHandler(async (req, res, next) => {
         await user.save();
         console.log(user);
         console.log("Data has been saved");
-        res.redirect('http://localhost:5007/api');
+        res.redirect('https://glow-scout.vercel.app/plan&price/success');
     } else {
         // Handle case where user is not found
         res.status(404).json({ message: "User not found" });
@@ -51,8 +51,8 @@ export const createStripeSession = asyncHandler(async (req, res, next) => {
             },
         ],
 
-        success_url: `http://localhost:5007/api/subcription/create?session_id={CHECKOUT_SESSION_ID}`, // Update success URL with placeholder
-        cancel_url: 'http://localhost:5007/',
+        success_url: `http://128.199.30.51:5007/api/subcription/create?session_id={CHECKOUT_SESSION_ID}`, // Update success URL with placeholder
+        cancel_url: 'https://glow-scout.vercel.app/plan&price/success/error',
     });
 
     generateResponse({ session: session, priceId }, "Stripe session created successfully", res);

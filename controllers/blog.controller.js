@@ -61,7 +61,8 @@ export const updateBlogPost = asyncHandler(async (req, res,next) => {
     }
 
     req.body.coverPicture = imageURL.secure_url;
-  }
+  } 
+
     const blog = await updateBlog(id, req.body);
 
      generateResponse(blog, "Blog Updated sucessfully",res);
@@ -79,3 +80,24 @@ export const getBlog = asyncHandler(async (req, res,next) => {
     
      generateResponse(blog, "Blog Fetch sucessfully",res);
 });
+
+export const toggleFeature = asyncHandler(async (req, res,next) => {
+
+        const findFeatureBlog = await findBlog({ isFeatured: true });
+        if(findFeatureBlog){
+            findFeatureBlog.isFeatured = false;
+            await findFeatureBlog.save();
+        }
+
+        const blog = await updateBlog(req.params.id, { isFeatured: true });
+    
+        generateResponse(blog, "Blog Updated sucessfully",res);
+    });
+
+
+    export const findFeatureBlog = asyncHandler(async (req, res,next) => {
+
+        const blog = await findBlog({ isFeatured: true });
+    
+        generateResponse(blog, "Blog Fetch sucessfully",res);
+    });

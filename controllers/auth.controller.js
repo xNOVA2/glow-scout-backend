@@ -4,17 +4,28 @@ import {
   generateRandomOTP,
 } from "../utils/helpers.js";
 import { createUser, findUser } from "../models/index.js";
-import { STATUS_CODES } from "../utils/constants.js";
+import { ROLES, STATUS_CODES } from "../utils/constants.js";
 import Mailer from "../utils/email.js";
+import { createStripeCustomer } from "./stripe.controller.js";
 
-// Register user API
 export const register = asyncHandler(async (req, res, next) => {
-  // create user in db
+  // Create user in db
   let user = await createUser(req.body);
-  // remove password
+
+  if (user.role === ROLES.BUSINESS) {
+    try {
+      const customer = await createStripeCustomer(user.email);
+      user.customerId = customer.id;
+      await user.save();
+    } catch (stripeError) {
+      // If Stripe operation fails, remove the user from the database
+      await user.remove();
+      throw stripeError; 
+    }
+  }
+
   user = user.toObject();
   delete user.password;
-
   generateResponse(user, "Register successful", res);
 });
 
@@ -165,7 +176,48 @@ export const googleAuthHandler = asyncHandler(async (req, res, next) => {
     generateResponse({ user, accessToken }, "Login successful", res);
   }
 
-  user = await createUser({ ...req.body, password: "Abc12345%" ,loginType:"GOOGLE"});
+    user = await createUser({ ...req.body, password: "Abc12345%" ,loginType:"GOOGLE"});
+    if (user.role === ROLES.BUSINESS) {
+      try {
+        const customer = await createStripeCustomer(user.email);
+        user.customerId = customer.id;
+        await user.save();
+      } catch (stripeError) {
+        // If Stripe operation fails, remove the user from the database
+        await user.remove();
+        throw stripeError; 
+      }
+    }
+    const accessToken = await user.generateAccessToken();
+    req.session = { accessToken };
+    generateResponse({ user, accessToken }, "Login successful", res);
+  });
+
+
+export const facebookAuthHandler = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
+
+  let user = await findUser({ email: email });
+
+  if (user) {
+    const accessToken = await user.generateAccessToken();
+    req.session = { accessToken };
+    generateResponse({ user, accessToken }, "Login successful", res);
+  }
+
+  user = await createUser({ ...req.body, password: "Abc12345%" ,loginType:"FACEBOOK"});
+  
+  if (user.role === ROLES.BUSINESS) {
+    try {
+      const customer = await createStripeCustomer(user.email);
+      user.customerId = customer.id;
+      await user.save();
+    } catch (stripeError) {
+      // If Stripe operation fails, remove the user from the database
+      await user.remove();
+      throw stripeError; 
+    }
+  }
   const accessToken = await user.generateAccessToken();
   req.session = { accessToken };
   generateResponse({ user, accessToken }, "Login successful", res);

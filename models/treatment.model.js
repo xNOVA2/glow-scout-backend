@@ -105,3 +105,10 @@ export const findAllSpasTreatment = (id) =>
     },
   ]);
 
+export const fetchFeatureTreatment = () =>TreatmentModel.aggregate([
+  {
+    $match: {
+      isFeatured:true
+    }
+  }
+]);

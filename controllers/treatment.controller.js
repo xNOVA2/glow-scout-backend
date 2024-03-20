@@ -8,6 +8,7 @@ import {
   updateTreatmentById,
   findTreatment,
   getAllUsers,
+  fetchFeatureTreatment,
 } from "../models/index.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 
@@ -202,3 +203,10 @@ export const singleTreatment = asyncHandler(async (req, res, next) => {
   
   generateResponse(treatment, 'Treatment fetched successfully', res);
 }); 
+
+
+export const featureTreatment = asyncHandler(async (req, res, next) => {
+  
+  const treatments = await fetchFeatureTreatment();
+  generateResponse(treatments, 'Featured treatment fetched successfully', res);
+});

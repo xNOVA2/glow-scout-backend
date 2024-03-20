@@ -16,7 +16,6 @@ export const subscription = asyncHandler(async (req, res, next) => {
     console.log(session.customer_details.email);
     const subscription = await stripe.subscriptions.retrieve(session.subscription);
 
-    console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     const user = await findUser({ email:session.customer_details.email });
     console.log(user);
     console.log(subscription.id);
@@ -82,25 +81,14 @@ export const fetchPriceIds = asyncHandler(async (req, res, next) => {
 
 
 
-export const stripeWebhook = asyncHandler(async (req, res, next) => {
-    const sig = req.headers['stripe-signature'];
-    let event;
 
-        event = stripe.webhooks.constructEvent(req.body, sig, "whsec_ad57be45a3bddba80be5ecd5fe2baff5d9860063829203ef7ee1aee102ee4182");
-    
+async function disableSubscription(customerId) {
+    // Logic to disable the user's subscription in the database
+    // Example: Find user by customerId and update subscription status to 'disabled'
+    // This implementation depends on your database schema and ORM (if used)
+    // For demonstration purposes, assuming a MongoDB and Mongoose setup:
+    await User.findOneAndUpdate({ customerId }, { subscriptionStatus: 'disabled' });
+}
 
-    switch (event.type) {
-        case 'customer.subscription.created':
-            const paymentIntent = event.data.object;
-            console.log("WEBHOOK HAS BEEN CALLED");
-            console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-       
-            // Then define and call a function to handle the event payment_intent.succeeded
-            break;
-        // ... handle other event types
-        default:
-            console.log(`Unhandled event type ${event.type}`);
-    }
 
-    generateResponse("event", "Stripe Webhook received successfully", res);
-});
+export const createStripeCustomer = (email) => stripe.customers.create({email:email});

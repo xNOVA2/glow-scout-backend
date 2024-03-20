@@ -42,6 +42,8 @@ export default class API {
     }
 
     setContentType(req, res, next) {
+       
+        // for webhooks it contain raw need to use buffer to access the body
         res.set('Content-Type', 'application/json');
         next();
     }

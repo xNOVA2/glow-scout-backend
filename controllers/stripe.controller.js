@@ -9,36 +9,30 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const subscription = asyncHandler(async (req, res, next) => {
    
-    const { session_id,email } = req.query;
+    const { session_id } = req.query;
 
     // Retrieve session details from Stripe
     const session = await stripe.checkout.sessions.retrieve(session_id);
-    console.log(session.customer_details.email);
     const subscription = await stripe.subscriptions.retrieve(session.subscription);
 
     const user = await findUser({ email:session.customer_details.email });
-    console.log(user);
-    console.log(subscription.id);
     if (user) {
         user.subscriptionId = subscription.id;
         user.subscription = "active";
+        user.tier = subscription.plan.id;
         await user.save();
-        console.log(user);
-        console.log("Data has been saved");
         res.redirect('https://glow-scout.vercel.app/plan&price/success');
     } else {
         // Handle case where user is not found
         res.status(404).json({ message: "User not found" });
     }
     
-    // generateResponse({ customerId, userEmail }, "Subscription created successfully", res);
 });
 
 export const createStripeSession = asyncHandler(async (req, res, next) => {
 
     const priceId = req.body.items[0].price; 
     const customer = req.body.customer;
-    console.log("<<<<<<<<<<<<<<<<<");
     const session = await stripe.checkout.sessions.create({
         mode: 'subscription',
         payment_method_types: ['card'],
@@ -83,10 +77,7 @@ export const fetchPriceIds = asyncHandler(async (req, res, next) => {
 
 
 async function disableSubscription(customerId) {
-    // Logic to disable the user's subscription in the database
-    // Example: Find user by customerId and update subscription status to 'disabled'
-    // This implementation depends on your database schema and ORM (if used)
-    // For demonstration purposes, assuming a MongoDB and Mongoose setup:
+
     await User.findOneAndUpdate({ customerId }, { subscriptionStatus: 'disabled' });
 }
 

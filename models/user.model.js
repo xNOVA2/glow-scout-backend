@@ -69,7 +69,7 @@ const userSchema = new Schema({
     showcaseImages: { type: [String], default: [] },
     customerId:{type:String},
     subscription:{type:String,enum:["active","disable"],default:"disable"},
-    tier:{type:String,enum:["silver","premium","gold","none"],default:"none"},
+    tier:{type:String,default:"none"},
     subscriptionId:{type:String,default:null},
     rating:{
         type:Number,

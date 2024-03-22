@@ -11,6 +11,9 @@ import TestimonialAPI from './clientTestimonial.route.js';
 import CitiesAPI from './cities.route.js';
 import BookAPI from './book.route.js';
 import SubcriptionAPI from './stripe.route.js';
+import ReviewAPI from './review.route.js';
+import AnalyticsAPI from './analytics.route.js';
+import HomeAPI from './home.route.js';
 // import UserAPI from './user.route.js';
 
 export default class API {
@@ -33,9 +36,14 @@ export default class API {
         this.routeGroups.push(new CitiesAPI());
         this.routeGroups.push(new BookAPI());
         this.routeGroups.push(new SubcriptionAPI());
+        this.routeGroups.push(new ReviewAPI());
+        this.routeGroups.push(new AnalyticsAPI())
+        this.routeGroups.push(new HomeAPI())
     }
 
     setContentType(req, res, next) {
+       
+        // for webhooks it contain raw need to use buffer to access the body
         res.set('Content-Type', 'application/json');
         next();
     }

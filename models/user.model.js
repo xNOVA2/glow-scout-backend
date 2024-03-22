@@ -64,9 +64,18 @@ const userSchema = new Schema({
     phone: { type: String },
     links: [socialLinks],
     city: { type: String },
+    address:{type:String},
     businessTiming: {type:businessTiming},
     showcaseImages: { type: [String], default: [] },
-}, { timestamps: true });
+    customerId:{type:String},
+    subscription:{type:String,enum:["active","disable"],default:"disable"},
+    tier:{type:String,default:"none"},
+    subscriptionId:{type:String,default:null},
+    rating:{
+        type:Number,
+        default:0
+    },
+}, { timestamps: true,versionKey:false });
 
 // hash password before saving
 userSchema.pre("save", async function (next) {
@@ -109,10 +118,10 @@ export const findUser = (query) => UserModel.findOne({...query,isDeleted:false})
 
 // get all users
 
-export const getAllUsers = async ({ query, page, limit,sort,role, }) => {
+export const getAllUsers = async ({ query, page, limit, sort, address }) => {
     const { data, pagination } = await getMongoosePaginatedData({
         model: UserModel,
-        query: { ...query, role: role },
+        query: { ...query, address: { $regex: `.*${address}.*`, $options: 'i' } },
         page,
         limit,
         sort,
@@ -120,5 +129,33 @@ export const getAllUsers = async ({ query, page, limit,sort,role, }) => {
 
     return { data, pagination };
 }
+
+
+export const getUser = async ({ query, page, limit, sort }) => {
+    const { data, pagination } = await getMongoosePaginatedData({
+        model: UserModel,
+        query: { ...query, role:"user" },
+        page,
+        limit,
+        sort,
+    });
+
+    return { data, pagination };
+}
+
+
+// analytics for spas
+
+export const getTreatmentCount = UserModel.aggregate(
+    {
+        $match: { role: "business" }
+    },
+    {
+        $group: {
+            _id: "$_id",
+            treatmentCount: { $sum: { $size: "$treatments" } }
+        }
+    }
+    )
 
 

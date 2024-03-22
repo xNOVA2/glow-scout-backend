@@ -4,17 +4,17 @@ import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 import { getMongoosePaginatedData } from '../utils/helpers.js';
 
 const blogSchema = new mongoose.Schema({
+    coverPicture:{
+        type: String,
+    },
     title: {
         type: String,
-        required: true
     },
     content: {
         type: String,
-        required: true
     },
     isFeatured: {
         type: Boolean,
-        default: false
     },
     createdAt: {
         type: Date,
@@ -44,4 +44,6 @@ export const findBlog = (query) => BlogModel.findOne(query)
 
 export const updateBlog = (id, update) => BlogModel.findByIdAndUpdate(id, update)
 
-export const deleteBlog = (id) => BlogModel.findByIdAndDelete(id)
+export const deleteBlog = (id) => BlogModel.findByIdAndDelete(id);
+
+

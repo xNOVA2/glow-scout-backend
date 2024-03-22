@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { ROLES } from '../utils/constants.js';
-import { subscription } from '../controllers/index.js';
+import { cancelSubscription, createStripeSession, fetchPriceIds, subscription } from '../controllers/index.js';
 
 export default class SubcriptionAPI {
     constructor() {
@@ -10,11 +10,12 @@ export default class SubcriptionAPI {
     }
     
     setupRoutes() {
-        this.router.get('/', (req, res) => {
-            res.send('Welcome to subscription route');
-        });
-        this.router.post('/create',authMiddleware(ROLES.BUSINESS), subscription);
-
+     
+        this.router.get('/create', subscription)
+        this.router.post('/session',authMiddleware(ROLES.BUSINESS), createStripeSession);
+        this.router.post('/cancel',authMiddleware(ROLES.BUSINESS), cancelSubscription);
+        // this.router.post('/webhook',stripeWebhook)
+        this.router.get('/price', fetchPriceIds);
     }
 
     getRouter() {

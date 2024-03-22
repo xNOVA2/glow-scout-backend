@@ -34,21 +34,27 @@ export const fetchSpas = asyncHandler(async (req, res, next) => {
   const limit = +(req.query.limit || 10);
   const search = req.query.search || "";
   const filter = req.query.filter || "";
-  let sortDirection = 1; // Default is ascending order (A to Z)
+  const address = req.query.location || "";
+  let sortField = "name"; // Default sort field is name
+  let sortDirection = 1; // Default sort direction is ascending (A to Z)
 
   if (filter.toLowerCase() === "ztoa") {
     sortDirection = -1; // Set to -1 for descending order (Z to A)
+  }
+  if (filter.toLowerCase() === "desc") {
+    sortField = "rating"; // Sort by rating if rating query is present
+    sortDirection = -1; // Set to -1 for descending order
   }
 
   const spas = await getAllUsers({
     query: { name: { $regex: `^${search}`, $options: "i" } },
     page,
     limit,
-    sort: { name: sortDirection }, // Sort by title in specified direction
-    role: "business",
+    sort: { [sortField]: sortDirection },
+    address: `^${address}`,
   });
 
-  generateResponse(spas, "Spas fetched successfully", res);
+  generateResponse(spas, `Spas fetched successfully`, res);
 });
 
 export const UpdateSpas = asyncHandler(async (req, res, next) => {
@@ -78,7 +84,6 @@ export const UpdateSpas = asyncHandler(async (req, res, next) => {
 
     req.body.profileImage = imageURL.secure_url;
   }
-  console.log(req.files);
   if (req?.files?.showcaseImages?.length > 0) {
     const showcaseImages = req.files?.showcaseImages;
 
@@ -91,7 +96,7 @@ export const UpdateSpas = asyncHandler(async (req, res, next) => {
         })
       );
 
-      // Now, 'uploadedPaths' is an array containing the Cloudinary URLs of the uploaded images
+      
       req.body.showcaseImages = uploadedPaths;
     }
   }
@@ -110,12 +115,6 @@ export const GetSpa = asyncHandler(async (req, res, next) => {
     });
 
   const spa = await findUser({ _id: id });
-
-  if (!spa)
-    return next({
-      message: "Spa not found",
-      statusCode: STATUS_CODES.NOT_FOUND,
-    });
 
   generateResponse(spa, "Spa fetched successfully", res);
 });

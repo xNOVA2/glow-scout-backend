@@ -8,6 +8,7 @@ import {
   updateTreatmentById,
   findTreatment,
   getAllUsers,
+  fetchFeatureTreatment,
 } from "../models/index.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 
@@ -166,7 +167,8 @@ export const getSpasTreatment = asyncHandler(async (req, res, next) => {
   const limit = +(req.query.limit || 10);
   const search = req.query.search || "";
   const filter = req.query.filter || "";
-
+  const address = req.query.location || ""
+  console.log(search);
   let sortDirection = 1; // Default is ascending order (A to Z)
 
   if (filter.toLowerCase() === "ztoa") {
@@ -177,22 +179,23 @@ export const getSpasTreatment = asyncHandler(async (req, res, next) => {
 
   const spasIds = treatments.spas;
   const query = {
-    $or: [
+    $and: [
       { _id: { $in: spasIds } },
-      { title: { $regex: `^${search}`, $options: "i" } }
+      { name: { $regex: `^${search}`, $options: "i" } }
     ]
   };
-
+  
   const spas = await getAllUsers({
     query,
     role: 'business',
     page,
     limit,
-    sort: { name: sortDirection }
+    sort: { name: sortDirection },
+    address: { $regex: `^${address}`, $options: "i"}
   });
-
   generateResponse(spas, 'Spas treatment fetched successfully', res);
 });
+
 
 export const singleTreatment = asyncHandler(async (req, res, next) => {
 
@@ -200,3 +203,10 @@ export const singleTreatment = asyncHandler(async (req, res, next) => {
   
   generateResponse(treatment, 'Treatment fetched successfully', res);
 }); 
+
+
+export const featureTreatment = asyncHandler(async (req, res, next) => {
+  
+  const treatments = await fetchFeatureTreatment();
+  generateResponse(treatments, 'Featured treatment fetched successfully', res);
+});

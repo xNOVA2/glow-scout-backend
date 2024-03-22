@@ -3,10 +3,8 @@ import { STATUS_CODES } from '../utils/constants.js';
 
 export const fetchCities = asyncHandler(async (req, res) => {
     
-    // const cities = await getCities();
+    const cities = await getCities();
 
-    
-    
-    generateResponse(null, "Cities fetched successfully", res);
+    generateResponse(cities, "Cities fetched successfully", res);
 
 })

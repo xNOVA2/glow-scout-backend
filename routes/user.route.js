@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { updateUsers } from '../controllers/user.controller.js';
+import { getAllUsers, updateUsers } from '../controllers/user.controller.js';
 import { ROLES } from '../utils/constants.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { UpdateUserValidation } from '../validators/user.validators.js';
@@ -13,6 +13,7 @@ export default class UserApi {
     }
     
     setupRoutes() {
+        this.router.get('/',getAllUsers)
         this.router.put('/update', authMiddleware(ROLES.USER),upload("user").fields([{name:'profileImage',maxCount:'1'}]),UpdateUserValidation,updateUsers);
     }
 

@@ -1,8 +1,10 @@
+
 import { Router } from 'express';
-import { getCurrentUser, googleAuthHandler, login, logoutUser, otpGenerate, otpVerify, register, resetPassword } from '../controllers/index.js';
+import { facebookAuthHandler, getCurrentUser, googleAuthHandler, login, logoutUser, otpGenerate, otpVerify, register, resetPassword } from '../controllers/index.js';
 import { loginValidation, registerValidation, forgotPasswordValidation, googleAuthValidation } from '../validators/index.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { ROLES } from '../utils/constants.js';
+
 
 export default class AuthAPI {
     constructor() {
@@ -20,11 +22,8 @@ export default class AuthAPI {
         this.router.post('/logout', authMiddleware(Object.values(ROLES)), logoutUser);
 
         // Googles routes for google authenticate
-        this.router.get('/google', googleAuthValidation ,googleAuthHandler);
-
-       
-     
-
+        this.router.post('/google', googleAuthValidation, googleAuthHandler);
+        this.router.post('/facebook', googleAuthValidation, facebookAuthHandler);
     }
 
     getRouter() {

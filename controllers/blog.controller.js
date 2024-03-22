@@ -1,10 +1,16 @@
 import { generateResponse, asyncHandler } from '../utils/helpers.js';
 import { STATUS_CODES } from '../utils/constants.js';
 import { createBlog,deleteBlog,getBlogs,updateBlog, findBlog} from '../models/index.js';
+import uploadOnCloudinary from '../utils/cloudinary.js';
 
 // Create blog
 export const createBlogPost = asyncHandler(async (req, res,next) => {
 
+    const image = req.files?.coverPicture?.[0].path
+
+    const picture = await uploadOnCloudinary(image);
+    req.body.coverPicture = picture.secure_url;
+        
     const blog = await createBlog(req.body);
     generateResponse(blog, "Blog created sucessfully", res);
 
@@ -44,6 +50,18 @@ export const updateBlogPost = asyncHandler(async (req, res,next) => {
         message: 'Blog not found',
         statusCode: STATUS_CODES.NOT_FOUND
     })
+     if (req?.files?.coverPicture?.length > 0) {
+    let imageURL = await uploadOnCloudinary(req.files.coverPicture[0].path);
+
+    if (!imageURL) {
+      return next({
+        statusCode: STATUS_CODES.BAD_REQUEST,
+        message: "Image failed why uploading on cloudinary",
+      });
+    }
+
+    req.body.coverPicture = imageURL.secure_url;
+  } 
 
     const blog = await updateBlog(id, req.body);
 
@@ -62,3 +80,24 @@ export const getBlog = asyncHandler(async (req, res,next) => {
     
      generateResponse(blog, "Blog Fetch sucessfully",res);
 });
+
+export const toggleFeature = asyncHandler(async (req, res,next) => {
+
+        const findFeatureBlog = await findBlog({ isFeatured: true });
+        if(findFeatureBlog){
+            findFeatureBlog.isFeatured = false;
+            await findFeatureBlog.save();
+        }
+
+        const blog = await updateBlog(req.params.id, { isFeatured: true });
+    
+        generateResponse(blog, "Blog Updated sucessfully",res);
+    });
+
+
+    export const findFeatureBlog = asyncHandler(async (req, res,next) => {
+
+        const blog = await findBlog({ isFeatured: true });
+    
+        generateResponse(blog, "Blog Fetch sucessfully",res);
+    });
